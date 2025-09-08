@@ -37,6 +37,16 @@ model Employee {
   deletedAt    DateTime?
 }
 
+// 1. 新增 Image 模型
+model Image {
+  id         String    @id @default(cuid())
+  url        String // Cloudinary 返回的图片URL
+  altText    String? // 图片的替代文本，用于SEO和可访问性
+  service    Service? // 关系：一张图片可以关联一个服务
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
 // 服务项目模型
 model Service {
   id           String        @id @default(cuid())
@@ -46,6 +56,9 @@ model Service {
   duration     Int // 持续时间（分钟）
   // 关系：一个服务可以被多次预约
   appointments Appointment[]
+  // 3. 将原来的 imageUrl 替换为与 Image 模型的关系
+  image        Image?        @relation(fields: [imageId], references: [id])
+  imageId      String?       @unique // 外键
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   deletedAt    DateTime?
