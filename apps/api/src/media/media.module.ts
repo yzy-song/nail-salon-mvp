@@ -4,7 +4,7 @@ import { MediaController } from './media.controller';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
-  imports: [CloudinaryModule], // <-- 导入
+  imports: [CloudinaryModule],
   controllers: [MediaController],
   providers: [MediaService],
 })
