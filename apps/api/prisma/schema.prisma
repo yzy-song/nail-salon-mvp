@@ -42,9 +42,10 @@ model Image {
   id         String    @id @default(cuid())
   url        String // Cloudinary 返回的图片URL
   altText    String? // 图片的替代文本，用于SEO和可访问性
-  service    Service? // 关系：一张图片可以关联一个服务
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  // 关系：Image 指向它的“关系表”，以便进行反向查询
+  serviceImages ServiceImage[]
 }
 
 // 服务项目模型
@@ -56,12 +57,24 @@ model Service {
   duration     Int // 持续时间（分钟）
   // 关系：一个服务可以被多次预约
   appointments Appointment[]
-  // 3. 将原来的 imageUrl 替换为与 Image 模型的关系
-  image        Image?        @relation(fields: [imageId], references: [id])
-  imageId      String?       @unique // 外键
+  // 关系：Service 也指向它的“关系表”
+  serviceImages ServiceImage[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   deletedAt    DateTime?
+}
+
+// 这是新增的“关联表”，是 Service 和 Image 之间的桥梁
+model ServiceImage {
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  serviceId String
+  image     Image   @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId   String
+
+  assignedAt DateTime @default(now())
+
+  // 设置联合主键
+  @@id([serviceId, imageId])
 }
 
 // 预约模型 (核心)
