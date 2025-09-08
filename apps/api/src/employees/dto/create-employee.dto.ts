@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+﻿import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateEmployeeDto {
   @ApiProperty({ description: '员工姓名', example: '李四' })
