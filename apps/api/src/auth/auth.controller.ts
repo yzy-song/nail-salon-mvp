@@ -2,7 +2,6 @@
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { successResponse } from '../common/utils/response.util';
 import { AuthGuard } from '@nestjs/passport';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
@@ -22,9 +21,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: '注册成功' })
   @ApiCommonResponses()
   async register(@Body() createUserDto: CreateUserDto) {
-    const newUser = await this.authService.register(createUserDto);
-    // 如果您使用了全局拦截器，可以直接 return newUser;
-    return successResponse(newUser, '注册成功');
+    return this.authService.register(createUserDto);
   }
 
   @Post('login')
@@ -33,8 +30,7 @@ export class AuthController {
   @ApiCommonResponses()
   async login(@Body() loginUserDto: LoginUserDto) {
     const token = await this.authService.login(loginUserDto);
-    // 如果您使用了全局拦截器，可以直接 return token;
-    return successResponse(token, '登录成功');
+    return token;
   }
 
   @Get('profile')
