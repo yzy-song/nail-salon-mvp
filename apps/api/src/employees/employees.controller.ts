@@ -14,6 +14,15 @@ import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.d
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
+  @Get(':id')
+  @ApiOperation({ summary: '获取单个员工信息' })
+  @ApiResponse({ status: 200, description: '返回员工信息' })
+  @ApiCommonResponses()
+  @UseGuards(AuthGuard('jwt'))
+  findOne(@Param('id') id: string) {
+    return this.employeesService.findOne(id);
+  }
+
   // --- 管理员权限 ---
   @Post()
   @ApiOperation({ summary: '创建员工' })
@@ -41,16 +50,6 @@ export class EmployeesController {
   @Roles(Role.ADMIN)
   remove(@Param('id') id: string) {
     return this.employeesService.remove(id);
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: '获取单个员工信息' })
-  @ApiResponse({ status: 200, description: '返回员工信息' })
-  @ApiCommonResponses()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMIN)
-  findOne(@Param('id') id: string) {
-    return this.employeesService.findOne(id);
   }
 
   // --- 公开接口 ---

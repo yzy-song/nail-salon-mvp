@@ -3,7 +3,7 @@
 # =============================
 
 # 定义要处理的文件扩展名（可根据项目需要增减）
-$extensions = @("*.js", "*.ts", "*.json", "*.md", "*.py", "*.sh", "*.html", "*.css", "*.vue", "*.txt")
+$extensions = @("*.js", "*.ts", "*.tsx", "*.jsx", "*.md", "*.py", "*.sh", "*.html", "*.css", "*.vue", "*.txt")
 
 # 获取所有文件（递归子目录），但排除 node_modules 下的任何文件
 Get-ChildItem -Recurse -Include $extensions | 
