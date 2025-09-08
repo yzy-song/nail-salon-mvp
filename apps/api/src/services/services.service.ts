@@ -2,7 +2,6 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
-
 @Injectable()
 export class ServicesService {
   constructor(private prisma: PrismaService) {}
@@ -14,13 +13,17 @@ export class ServicesService {
 
   // 查找所有服务
   async findAll() {
-    return this.prisma.service.findMany({ where: { deletedAt: null } });
+    return this.prisma.service.findMany({
+      where: { deletedAt: null },
+      include: { image: true }, // <-- 添加 include
+    });
   }
 
   // 查找单个服务
   async findOne(id: string) {
-    const service = await this.prisma.service.findUnique({
+    const service = await this.prisma.service.findFirst({
       where: { id, deletedAt: null },
+      include: { image: true }, // <-- 添加 include
     });
     if (!service) {
       throw new NotFoundException(`ID为 ${id} 的服务未找到`);

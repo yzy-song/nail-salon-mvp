@@ -12,6 +12,8 @@ import { UsersModule } from './users/users.module';
 import { EmailModule } from './email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { MediaModule } from './media/media.module';
 @Module({
   imports: [
     // 设置.env配置文件为全局可用
@@ -28,6 +30,8 @@ import { TasksModule } from './tasks/tasks.module';
     EmailModule,
     ScheduleModule.forRoot(),
     TasksModule,
+    CloudinaryModule,
+    MediaModule,
   ],
   controllers: [AppController], // NestJS 默认创建的 Controller
   providers: [AppService], // NestJS 默认创建的 Service
