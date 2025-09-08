@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型 (顾客或管理员)
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String?
+  password     String
+  role         Role          @default(USER)
+  appointments Appointment[]
+  // 👇 --- 新增字段 --- 👇
+  passwordResetToken   String?   @unique // 密码重置Token
+  passwordResetExpires DateTime? // Token 过期时间
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// 员工模型
+model Employee {
+  id           String        @id @default(cuid())
+  name         String
+  title        String // e.g., "高级美甲师"
+  // 关系：一个员工可以处理多个预约
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+}
+
+// 服务项目模型
+model Service {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  price        Float
+  duration     Int // 持续时间（分钟）
+  // 关系：一个服务可以被多次预约
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+}
+
+// 预约模型 (核心)
+model Appointment {
+  id         String   @id @default(cuid())
+  // 关系：关联到哪个用户
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  // 关系：关联到哪个员工
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId String
+  // 关系：关联到哪个服务
+  service    Service  @relation(fields: [serviceId], references: [id])
+  serviceId  String
+
+  appointmentTime DateTime // 预约的具体时间
+  status          AppointmentStatus @default(PENDING) // 预约状态
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  reminderSent Boolean @default(false)
+}
+
+// 枚举：用户角色
+enum Role {
+  USER  // 普通用户
+  ADMIN // 管理员
+}
+
+// 枚举：预约状态
+enum AppointmentStatus {
+  PENDING   // 待确认
+  CONFIRMED // 已确认
+  COMPLETED // 已完成
+  CANCELLED // 已取消
+}
