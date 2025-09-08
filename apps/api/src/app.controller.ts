@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+﻿import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller() // @Controller() 没有参数，表示它处理根路径
