@@ -18,7 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { ServiceForm } from './service-form';
+import { ServiceForm, ServiceFormValues } from './service-form';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
@@ -33,7 +33,17 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const queryClient = useQueryClient();
 
   const { mutate: updateService, isPending: isUpdatePending } = useMutation({
-    mutationFn: (values: any) => api.patch(`/services/${data.id}`, values),
+
+    mutationFn: (values: ServiceFormValues) => {
+    // Convert price and duration back to numbers before sending to API
+    const numericValues = {
+      ...values,
+      price: parseFloat(values.price),
+      duration: parseInt(values.duration, 10),
+    };
+    return api.patch(`/services/${data.id}`, numericValues);
+  },
+    
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-services'] });
       toast.success('Service updated successfully!');
@@ -54,6 +64,13 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       toast.error('Delete failed', { description: error.response?.data?.message });
     },
   });
+
+  const formDefaultValues = {
+    name: data.name,
+    description: data.description ?? undefined,
+    price: data.price.toString(),
+    duration: data.duration.toString(),
+  };
 
   return (
     <>
@@ -82,7 +99,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <DialogTitle>Edit Service</DialogTitle>
           </DialogHeader>
           <ServiceForm
-            initialData={data}
+            defaultValues={formDefaultValues}
             onSubmit={updateService}
             isPending={isUpdatePending}
           />

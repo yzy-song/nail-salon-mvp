@@ -25,34 +25,38 @@ import { ImageType } from '../../media/_components/image-card';
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().optional(),
-  price: z.coerce.number().min(0),
-  duration: z.coerce.number().min(1),
+  
+  // Treat price and duration as strings during form validation
+  price: z.string().min(1, { message: 'Price is required.' }),
+  duration: z.string().min(1, { message: 'Duration is required.' }),
+
   imageIds: z.array(z.string()).optional(),
 });
 
-type ServiceFormValues = z.infer<typeof formSchema>;
+export type ServiceFormValues = z.infer<typeof formSchema>;
 
 interface ServiceFormProps {
-  initialData?: Service | null;
+  defaultValues?: Partial<ServiceFormValues>;
   onSubmit: (values: ServiceFormValues) => void;
   isPending: boolean;
 }
 
 export const ServiceForm: React.FC<ServiceFormProps> = ({
-  initialData,
+  defaultValues,
   onSubmit,
   isPending,
 }) => {
   const [isMediaDialogOpen, setIsMediaDialogOpen] = useState(false);
 
   const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(formSchema as any),
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      name: initialData?.name || '',
-      description: initialData?.description || '',
-      price: initialData?.price || 0,
-      duration: initialData?.duration || 30,
-      imageIds: initialData?.images?.map((img) => img.id) || [],
+      name: defaultValues?.name || '',
+      description: defaultValues?.description || '',
+      // Convert numbers to strings for the form
+      price: String(defaultValues?.price || 0),
+      duration: String(defaultValues?.duration || 30),
+      imageIds: defaultValues?.imageIds || [],
     },
   });
 
@@ -73,7 +77,6 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* 👇 --- The missing fields are now back --- 👇 */}
           <FormField
             control={form.control}
             name="name"
