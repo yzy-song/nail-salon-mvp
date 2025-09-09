@@ -3,14 +3,10 @@
 import { useBookingStore } from '@/store/booking.store';
 import { SelectService } from './_components/SelectService';
 import { SelectEmployeeAndDate } from './_components/SelectEmployeeAndDate';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ConfirmationStep } from './_components/ConfirmationStep';
 import { BookingProgress } from './_components/BookingProgress';
-
-// Create a client
-const queryClient = new QueryClient();
 
 const BookingPageContent = () => {
   const { step, serviceId, setServiceId } = useBookingStore();
@@ -50,8 +46,10 @@ const BookingPageContent = () => {
 
 const BookingPage = () => {
   return (
-      <BookingPageContent />
-  )
+      <Suspense fallback={<div className="container mx-auto py-12">Loading...</div>}>
+        <BookingPageContent />
+      </Suspense>
+  );
 }
 
 export default BookingPage;
