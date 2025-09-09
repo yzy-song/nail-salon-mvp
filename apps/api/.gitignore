@@ -5,4 +5,4 @@ node_modules
 /generated/prisma
 
 # firebase
-apps/api/firebase-service-account-key.json
+firebase-service-account-key.json
