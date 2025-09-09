@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-// 1. Change the toast import
 import { toast } from 'sonner';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
@@ -46,7 +45,6 @@ export function LoginForm() {
       const profileResponse = await api.get('/auth/profile');
       setUser(profileResponse.data.data);
 
-      // 3. Use the new, simpler toast API
       toast.success('Login Successful!', {
         description: `Welcome back, ${
           profileResponse.data.data.name || profileResponse.data.data.email
@@ -55,7 +53,6 @@ export function LoginForm() {
 
       router.push('/');
     } catch (error: any) {
-      // 4. Use toast.error for failures
       toast.error('Login Failed', {
         description:
           error.response?.data?.message || 'An unexpected error occurred.',
@@ -63,7 +60,6 @@ export function LoginForm() {
     }
   }
 
-  // ... the rest of your JSX form remains exactly the same
   return (
     <Form {...form}>
       <FormField
@@ -92,9 +88,14 @@ export function LoginForm() {
           </FormItem>
         )}
       />
-      <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
-        Login
+      <Button
+          type="submit"
+          onClick={form.handleSubmit(onSubmit)}
+          className="w-full py-3 text-lg font-semibold bg-pink-500 hover:bg-pink-600 text-white rounded-md"
+        >
+          Login
       </Button>
+      
     </Form>
   );
 }

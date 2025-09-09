@@ -56,7 +56,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter()); // 全局异常过滤器
 
   // 7. 启动应用
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   console.log(`Application is running on: ${await app.getUrl()}`);
 }

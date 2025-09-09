@@ -9,6 +9,7 @@ import { addMinutes } from 'date-fns';
 import { EmailService } from 'src/email/email.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { FirebaseAdminService } from 'src/firebase/firebase-admin.service';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private emailService: EmailService,
+    private firebaseAdmin: FirebaseAdminService,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
@@ -145,6 +147,40 @@ export class AuthService {
     // 同样，移除密码并返回
     const { password, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
+  }
+
+  async firebaseLogin(idToken: string) {
+    try {
+      const decodedToken = await this.firebaseAdmin.auth.verifyIdToken(idToken);
+      const { email, name, uid } = decodedToken;
+
+      if (!email) {
+        throw new UnauthorizedException('Firebase token is missing email.');
+      }
+
+      let user = await this.prisma.user.findUnique({ where: { email } });
+
+      if (!user) {
+        // If user doesn't exist, create a new one.
+        // Note: We generate a random password as it's required by our schema,
+        // but the user will never use it.
+        const randomPassword = randomBytes(16).toString('hex');
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+        user = await this.prisma.user.create({
+          data: {
+            email,
+            name: name || 'Firebase User',
+            password: hashedPassword, // Required field
+          },
+        });
+      }
+
+      // Return our system's JWT
+      return this._createToken(user);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid Firebase token.');
+    }
   }
 
   // 类的内部私有方法,只能在类的其他方法中调用

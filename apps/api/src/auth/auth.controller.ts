@@ -10,6 +10,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { User } from './decorators/user.decorator';
+import { FirebaseLoginDto } from './dto/firebase-login.dto';
 
 @ApiTags('认证与用户管理')
 @Controller('auth') // 定义这个 Controller 的路由前缀是 /auth
@@ -71,5 +72,13 @@ export class AuthController {
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
     return this.authService.updateProfile(userId, updateProfileDto);
+  }
+
+  @Post('firebase-login')
+  @ApiOperation({ summary: 'Login or register with Firebase' })
+  @ApiResponse({ status: 200, description: 'Login or registration successful' })
+  @ApiCommonResponses()
+  async firebaseLogin(@Body() firebaseLoginDto: FirebaseLoginDto) {
+    return this.authService.firebaseLogin(firebaseLoginDto.idToken);
   }
 }
