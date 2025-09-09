@@ -14,6 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TasksModule } from './tasks/tasks.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { MediaModule } from './media/media.module';
+import { FirebaseModule } from './firebase/firebase.module';
 @Module({
   imports: [
     // 设置.env配置文件为全局可用
@@ -32,6 +33,7 @@ import { MediaModule } from './media/media.module';
     TasksModule,
     CloudinaryModule,
     MediaModule,
+    FirebaseModule,
   ],
   controllers: [AppController], // NestJS 默认创建的 Controller
   providers: [AppService], // NestJS 默认创建的 Service
