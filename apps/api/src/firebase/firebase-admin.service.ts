@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 // 1. Use import to load the JSON file
-import * as serviceAccount from '../firebase-service-account-key.json';
+import * as serviceAccount from '../../firebase-service-account-key.json';
 
 @Injectable()
 export class FirebaseAdminService implements OnModuleInit {
