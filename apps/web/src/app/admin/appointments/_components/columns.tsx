@@ -14,6 +14,7 @@ import {
 import { MoreHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 
+import { CellAction } from './cell-action';
 // This type is manually created for the frontend.
 // In a real project, you would share this from a @repo/types package.
 export type Appointment = {
@@ -77,27 +78,6 @@ export const columns: ColumnDef<Appointment>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      const appointment = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(appointment.id)}
-            >
-              Copy Appointment ID
-            </DropdownMenuItem>
-            {/* We will add "Change Status" functionality here later */}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
+    cell: ({ row }) => <CellAction data={row.original} />,
+    header: () => <span className="sr-only">Actions</span>,},
 ];
