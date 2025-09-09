@@ -1,15 +1,17 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-// 1. Use import to load the JSON file
-import * as serviceAccount from '../../firebase-service-account-key.json';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class FirebaseAdminService implements OnModuleInit {
   onModuleInit() {
     if (admin.apps.length === 0) {
+      const serviceAccount = JSON.parse(
+        readFileSync(join(__dirname, '../../firebase-service-account-key.json'), 'utf8'),
+      );
       admin.initializeApp({
-        // 2. Cast the imported JSON to the correct type
-        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        credential: admin.credential.cert(serviceAccount),
       });
       console.log('Firebase Admin initialized.');
     }

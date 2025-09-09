@@ -1,8 +1,7 @@
 ﻿import { LoggerService, Injectable, Scope } from '@nestjs/common';
 import { createLogger, format, transports, Logger } from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
 import { type TransformableInfo } from 'logform';
-
+import DailyRotateFile from 'winston-daily-rotate-file';
 // 从 format 中导入 colorize 和 printf
 const { combine, timestamp, json, errors, colorize, printf } = format;
 
