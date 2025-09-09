@@ -122,7 +122,20 @@ export class AppointmentsService {
       this.prisma.appointment.findMany({
         skip,
         take: limit,
-        // ...
+        orderBy: {
+          createdAt: 'desc',
+        },
+        include: {
+          user: {
+            select: { name: true, email: true },
+          },
+          service: {
+            select: { name: true },
+          },
+          employee: {
+            select: { name: true },
+          },
+        },
       }),
       this.prisma.appointment.count(),
     ]);
