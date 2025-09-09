@@ -20,4 +20,8 @@ export class CloudinaryService {
       upload.end(file.buffer);
     });
   }
+
+  async deleteImage(publicId: string): Promise<void> {
+    return cloudinary.uploader.destroy(publicId);
+  }
 }

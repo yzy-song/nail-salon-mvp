@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -23,6 +24,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
+import { DeleteMediaDto } from './dto/delete-media.dto';
 
 @ApiTags('媒体库 (Media)')
 @ApiBearerAuth()
@@ -60,6 +62,20 @@ export class MediaController {
     return this.mediaService.findAll();
   }
 
+  // --- 👇 Reorder the Delete methods ---
+
+  // 1. Place the more specific, static route first. This avoids route conflicts.
+  //    If ':id' were first, 'batch' would be treated as an ID.
+  @Delete('batch')
+  @ApiOperation({ summary: 'Batch delete images' })
+  @ApiResponse({ status: 200, description: 'Images deleted successfully' })
+  @ApiResponse({ status: 404, description: 'One or more images not found' })
+  @ApiCommonResponses()
+  deleteMany(@Body() deleteMediaDto: DeleteMediaDto) {
+    return this.mediaService.deleteMany(deleteMediaDto.ids);
+  }
+
+  // 2. Place the more generic, parameterized route second.
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an image' })
   @ApiResponse({ status: 200, description: 'Image deleted successfully' })
