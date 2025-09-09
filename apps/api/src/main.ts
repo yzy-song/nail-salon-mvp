@@ -46,9 +46,14 @@ async function bootstrap() {
   );
 
   // 5. 配置 CORS，允许前端应用访问
+  const frontendUrls = (configService.get<string>('FRONTEND_URL') || '').split(',');
   app.enableCors({
-    origin: configService.get('CORS_ORIGINS').split(','), // 从环境变量读取
+    origin: frontendUrls,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: 'Content-Type, Authorization, Accept',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   // 6. 启用全局拦截器和过滤器
