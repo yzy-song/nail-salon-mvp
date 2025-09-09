@@ -20,8 +20,8 @@ import { Service } from '@/components/services/ServiceCard';
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().nullable().optional(),
-  price: z.number().min(0, { message: 'Price must be a positive number.' }),
-  duration: z.number().min(1, { message: 'Duration must be at least 1 minute.' }),
+  price: z.coerce.number().min(0, { message: 'Price must be a positive number.' }),
+  duration: z.coerce.number().min(1, { message: 'Duration must be at least 1 minute.' }),
 });
 
 type ServiceFormValues = z.infer<typeof formSchema>;
@@ -38,7 +38,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
   isPending,
 }) => {
   const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema) as any,
     defaultValues: initialData || {
       name: '',
       description: '',
