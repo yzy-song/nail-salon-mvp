@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@repo/utils",
   "version": "0.0.0",
   "main": "./src/index.ts",

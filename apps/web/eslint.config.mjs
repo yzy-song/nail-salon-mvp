@@ -26,7 +26,9 @@ const eslintConfig = [
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
-      '@typescript-eslint/no-explicit-any': 'warn', // 警告不要主动写 any
+      
+      // 优化的规则
+      '@typescript-eslint/no-explicit-any': 'warn',
 
       // --- 将 unsafe 规则从 'off' 调整为 'warn' ---
       '@typescript-eslint/no-unsafe-argument': 'warn',
