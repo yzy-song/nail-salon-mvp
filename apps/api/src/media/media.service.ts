@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -20,5 +20,23 @@ export class MediaService {
     );
 
     return Promise.all(createDbPromises);
+  }
+
+  async findAll() {
+    return this.prisma.image.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async remove(id: string) {
+    // In a real app, you might check if the image is in use before deleting.
+    const image = await this.prisma.image.findUnique({ where: { id } });
+    if (!image) {
+      throw new NotFoundException(`Image with ID ${id} not found.`);
+    }
+    // You would also delete from Cloudinary here in a real app.
+    return this.prisma.image.delete({ where: { id } });
   }
 }

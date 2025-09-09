@@ -40,6 +40,7 @@ const eslintConfig = [
       '@typescript-eslint/no-base-to-string': 'off', // 我们为了日志功能特意关闭的
 
       'function-paren-newline': 'off',
+
     },
   },
 ];
