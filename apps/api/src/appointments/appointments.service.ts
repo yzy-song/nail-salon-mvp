@@ -6,9 +6,9 @@ import { AppointmentStatus } from '@prisma/client';
 import { addMinutes } from 'date-fns';
 
 import { PaginationDto } from 'src/common/dot/pagination.dto';
-import { createPaginator } from 'src/common/utils/pagination.util';
 import { ForbiddenException } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
+import { paginate } from 'src/common/utils/pagination.util';
 
 // ...
 
@@ -118,26 +118,17 @@ export class AppointmentsService {
     const { page = 1, limit = 10 } = paginationDto;
     const skip = (page - 1) * limit;
 
-    const paginator = createPaginator(limit);
-
-    const [appointments, total] = await Promise.all([
+    const [items, total] = await Promise.all([
       this.prisma.appointment.findMany({
         skip,
         take: limit,
-        // 保持我们之前的联表查询
-        include: {
-          user: { select: { name: true, email: true } },
-          employee: { select: { name: true } },
-          service: { select: { name: true } },
-        },
-        orderBy: {
-          createdAt: 'desc', // 按创建时间降序排序
-        },
+        // ...
       }),
       this.prisma.appointment.count(),
     ]);
 
-    return paginator(appointments, total, page);
+    // Directly call the utility function to format the return value
+    return paginate(items, total, page, limit);
   }
 
   // 顾客获取自己的预约
