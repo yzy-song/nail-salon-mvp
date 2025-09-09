@@ -46,7 +46,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
   const [isMediaDialogOpen, setIsMediaDialogOpen] = useState(false);
 
   const form = useForm<ServiceFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema as any),
     defaultValues: {
       name: initialData?.name || '',
       description: initialData?.description || '',
