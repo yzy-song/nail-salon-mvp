@@ -9,9 +9,12 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { AppLogger } from './common/utils/logger';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     // 1. 完全禁用 NestJS 内置的日志，由我们自己的 Winston Logger 全权接管
     logger: false,
   });
@@ -46,14 +49,14 @@ async function bootstrap() {
   app.enableCors({
     origin: configService.get('CORS_ORIGINS').split(','), // 从环境变量读取
     credentials: true,
-    crossOriginOpenerPolicy: {
-      policy: 'same-origin-allow-popups', // 允许安全的跨域弹窗
-    },
   });
 
   // 6. 启用全局拦截器和过滤器
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter()); // 全局异常过滤器
+
+  // 静态资源服务，提供 public 目录
+  app.useStaticAssets(join(__dirname, '..', 'public'));
 
   // 7. 启动应用
   await app.listen(port, '0.0.0.0');

@@ -1,4 +1,36 @@
-﻿# Turborepo starter
+﻿# Project Recap: What You've Built
+
+Backend (NestJS on Render/Supabase):
+
+A secure, JWT-based API with role-based access control.
+
+Full CRUD modules for managing services, employees, appointments, and users.
+
+Advanced features like appointment conflict checking, soft deletes, and pagination.
+
+A professional, decoupled media library with batch uploads to Cloudinary.
+
+Automated email notifications via Resend for a complete user experience.
+
+Production-grade logging, error handling, and security.
+
+A live, interactive Swagger API documentation.
+
+Live at: https://api.nailsalon.yzysong.com (once you configure the domain on Render).
+
+Frontend (Next.js on Vercel):
+
+A modern, responsive user interface built with the App Router and Tailwind CSS.
+
+Complete customer-facing flows for registration, login (including Google Sign-In), browsing services, and a multi-step booking process.
+
+A comprehensive admin dashboard for managing the entire business.
+
+Robust client-side state management with Zustand and data fetching with TanStack Query.
+
+Live at: https://nailsalon.yzysong.com
+
+# Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
 

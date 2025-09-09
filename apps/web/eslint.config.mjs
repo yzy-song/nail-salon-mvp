@@ -12,12 +12,19 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    languageOptions: {
+      parserOptions: {
+        project: "./tsconfig.json", // 指向你的 tsconfig 路径
+        tsconfigRootDir: __dirname,
+      },
+    },
     ignores: [
       "node_modules/**",
       ".next/**",
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "eslint.config.mjs",
     ],
 
     rules: {
