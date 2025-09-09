@@ -50,9 +50,7 @@ const BookingPageContent = () => {
 
 const BookingPage = () => {
   return (
-    <QueryClientProvider client={queryClient}>
       <BookingPageContent />
-    </QueryClientProvider>
   )
 }
 
