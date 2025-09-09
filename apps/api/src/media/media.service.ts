@@ -31,12 +31,60 @@ export class MediaService {
   }
 
   async remove(id: string) {
-    // In a real app, you might check if the image is in use before deleting.
+    // 1. Find the image in our DB
     const image = await this.prisma.image.findUnique({ where: { id } });
     if (!image) {
       throw new NotFoundException(`Image with ID ${id} not found.`);
     }
-    // You would also delete from Cloudinary here in a real app.
+
+    // 2. Delete from Cloudinary
+    const publicId = this.getPublicIdFromUrl(image.url);
+    await this.cloudinary.deleteImage(publicId);
+
+    // 3. Delete from our DB
     return this.prisma.image.delete({ where: { id } });
+  }
+
+  async deleteMany(ids: string[]) {
+    // 1. Find all images to be deleted
+    const images = await this.prisma.image.findMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+
+    if (images.length !== ids.length) {
+      throw new NotFoundException('One or more images were not found.');
+    }
+
+    // 2. Create deletion promises for Cloudinary and our DB
+    const cloudinaryDeletePromises = images.map((image) =>
+      this.cloudinary.deleteImage(this.getPublicIdFromUrl(image.url)),
+    );
+
+    const prismaDeletePromise = this.prisma.image.deleteMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+
+    // 3. Execute all deletions in parallel
+    await Promise.all([...cloudinaryDeletePromises, prismaDeletePromise]);
+
+    return { message: `${ids.length} images deleted successfully.` };
+  }
+
+  getPublicIdFromUrl(url: string): string {
+    // Split the URL by slashes to get its parts
+    console.log('Extracting public ID from URL:', url);
+    const parts = url.split('/');
+
+    // Get the last part, which is the filename (e.g., "sample.jpg")
+    const lastPart = parts[parts.length - 1];
+
+    // Split the filename by the dot and take the first part
+    const [publicId] = lastPart.split('.');
+
+    return publicId;
   }
 }
