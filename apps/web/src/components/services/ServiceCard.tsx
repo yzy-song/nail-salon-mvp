@@ -13,8 +13,10 @@ import Link from 'next/link';
 // Define the type for a single service
 // This should match the data coming from our backend API
 interface ServiceImage {
-  id: string;
-  url: string;
+  image: {
+    id: string;
+    url: string;
+  };
 }
 
 export interface Service {
@@ -23,7 +25,7 @@ export interface Service {
   description: string | null;
   price: number;
   duration: number; // in minutes
-  images: ServiceImage[];
+  serviceImages: ServiceImage[];
 }
 
 interface ServiceCardProps {
@@ -32,7 +34,9 @@ interface ServiceCardProps {
 
 export const ServiceCard = ({ service }: ServiceCardProps) => {
   // Use the first image as the cover, with a fallback
-  const coverImage = service.images?.[0]?.url || 'https://placehold.co/400x400.png?text=NailSalon';
+  // const coverImage = service.serviceImages?.[0]?.url || 'https://placehold.co/400x400.png?text=NailSalon';
+  const coverImage = 'https://placehold.co/400x400.png?text=NailSalon';
+  // console.log('ServiceCard coverImage:', service.serviceImages[0]?.image.url);
   return (
     <Card className="flex flex-col">
       <CardHeader>

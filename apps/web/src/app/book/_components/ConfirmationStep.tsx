@@ -56,7 +56,7 @@ export const ConfirmationStep = () => {
         description: 'You will receive a confirmation email shortly.',
       });
       reset(); // Reset the form
-      router.push('/'); // Redirect to homepage
+      router.push('/my-appointments'); // Redirect to my appointments page
     } catch (error: any) {
       toast.error('Booking Failed', {
         description: error.response?.data?.message || 'Please try again.',

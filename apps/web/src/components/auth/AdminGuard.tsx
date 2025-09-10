@@ -5,24 +5,25 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export const AdminGuard = ({ children }: { children: React.ReactNode }) => {
-  const { isLoggedIn, user } = useAuthStore();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoggedIn, user } = useAuthStore();
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Ensure we don't check on the server or before the store is hydrated
-    if (typeof window !== 'undefined') {
-      if (!isLoggedIn) {
-        router.replace('/login');
-      } else if (user?.role !== 'ADMIN') {
-        router.replace('/'); // Redirect non-admins to homepage
-      } else {
-        setIsLoading(false); // User is an admin, allow access
-      }
-    }
-  }, [isLoggedIn, user, router]);
+    setIsHydrated(true);
+  }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    if (!isLoggedIn) {
+      router.replace('/login');
+    } else if (user?.role !== 'ADMIN') {
+      router.replace('/');
+    }
+  }, [isHydrated, isLoggedIn, user, router]);
+
+  if (!isHydrated || !isLoggedIn || user?.role !== 'ADMIN') {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 

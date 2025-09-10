@@ -11,6 +11,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+import { json } from 'express';
 import { join } from 'path';
 
 async function bootstrap() {
@@ -18,6 +19,15 @@ async function bootstrap() {
     // 1. 完全禁用 NestJS 内置的日志，由我们自己的 Winston Logger 全权接管
     logger: false,
   });
+
+  app.use(
+    json({
+      verify: (req: any, res, buf) => {
+        // Make the raw body available on the request object
+        req.rawBody = buf;
+      },
+    }),
+  );
   // 2. 使用 Helmet 增强安全性
   app.use(helmet());
   // 3. 使用自定义的 AppLogger

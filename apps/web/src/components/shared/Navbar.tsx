@@ -1,4 +1,4 @@
-'use client'; // This component now uses client-side state, so we mark it
+'use client'; 
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth.store';
 
 export const Navbar = () => {
-  // We use this trick to avoid Next.js hydration errors with persisted state
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -33,9 +32,13 @@ export const Navbar = () => {
             </Link>
           )}
         </nav>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-4 items-center"> {/* I've increased the gap slightly */}
           {isClient && isLoggedIn && user ? (
             <>
+              <Link href="/my-appointments" className="text-sm font-medium text-gray-600 hover:text-pink-500 transition-colors">
+                My Appointments
+              </Link>
+
               <span className="text-sm text-gray-700">Welcome, {user.name || user.email}!</span>
               <Button variant="ghost" onClick={logout}>
                 Logout

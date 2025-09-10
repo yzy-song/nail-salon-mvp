@@ -92,6 +92,8 @@ model Appointment {
 
   appointmentTime DateTime // 预约的具体时间
   status          AppointmentStatus @default(PENDING) // 预约状态
+  paymentIntentId    String?           @unique
+  paymentStatus      String?           @default("unpaid") // e.g., unpaid, paid, failed
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   reminderSent Boolean @default(false)
