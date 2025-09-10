@@ -6,15 +6,24 @@ import { Elements } from '@stripe/react-stripe-js';
 import { CheckoutForm } from './_components/checkout-form';
 import api from '@/lib/api';
 
+// 1. 明确定义 Page Props 类型
+interface CheckoutPageProps {
+  params: {
+    appointmentId: string;
+  };
+}
+
+// 2. 将 Stripe Promise 的加载移到组件外部，确保只执行一次
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-const CheckoutPage = ({ params }: { params: { appointmentId: string } }) => {
+const CheckoutPage = ({ params }: CheckoutPageProps) => {
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
     const createIntent = async () => {
+      if (!params.appointmentId) return;
       try {
         const response = await api.post('/payments/create-intent', {
           appointmentId: params.appointmentId,
