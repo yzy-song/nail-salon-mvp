@@ -10,33 +10,31 @@ import {
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-// Define the type for a single service
-// This should match the data coming from our backend API
+// 定义图片类型
 interface ServiceImage {
-  image: {
-    id: string;
-    url: string;
-  };
+  id: string;
+  url: string;
 }
 
+// 接口定义中的核心修改
 export interface Service {
   id: string;
   name: string;
   description: string | null;
   price: number;
-  duration: number; // in minutes
-  serviceImages: ServiceImage[];
+  duration: number;
+  images: ServiceImage[];
 }
 
 interface ServiceCardProps {
   service: Service;
 }
 
+
 export const ServiceCard = ({ service }: ServiceCardProps) => {
-  // Use the first image as the cover, with a fallback
-  // const coverImage = service.serviceImages?.[0]?.url || 'https://placehold.co/400x400.png?text=NailSalon';
-  const coverImage = 'https://placehold.co/400x400.png?text=NailSalon';
-  // console.log('ServiceCard coverImage:', service.serviceImages[0]?.image.url);
+  // 获取封面图代码中的核心修改
+  const coverImage = service.images?.[0]?.url || 'https://placehold.co/400x400.png?text=NailSalon';
+  
   return (
     <Card className="flex flex-col">
       <CardHeader>

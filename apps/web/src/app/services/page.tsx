@@ -1,17 +1,34 @@
 import { ServiceCard, Service } from '@/components/services/ServiceCard';
 import api from '@/lib/api';
 
+// Define the raw type coming from the backend API
+interface RawServiceData {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  duration: number;
+  serviceImages: {
+    image: {
+      id: string;
+      url: string;
+    };
+  }[];
+}
 // This is a Server Component, so we can make it async and fetch data directly.
 async function getServices(): Promise<Service[]> {
   try {
-    const response = await api.get('/services');
-    // The actual data is inside response.data.data due to our interceptor
-    // We also need to flatten the image data structure from the backend
-    const servicesData = response.data.data.map((service: any) => {
+    // The response data will be an array of our raw type
+    const response = await api.get<{ data: RawServiceData[] }>('/services');
+    
+    // 3. Map the raw data to the clean component type, no `any` needed!
+    const servicesData = response.data.data.map((service) => {
+      // TypeScript now understands the shape of `service` perfectly
       const { serviceImages, ...restService } = service;
-      const images = serviceImages.map((si: any) => si.image);
+      const images = serviceImages.map((si) => si.image);
       return { ...restService, images };
     });
+
     return servicesData;
   } catch (error) {
     console.error('Failed to fetch services:', error);
