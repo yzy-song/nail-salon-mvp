@@ -7,7 +7,6 @@ import { DataTable } from './_components/data-table';
 
 async function getAppointments(): Promise<Appointment[]> {
   const response = await api.get('/appointments');
-  console.log('Fetched 222appointments:', response.data.data);
   return response.data.data;
 }
 
