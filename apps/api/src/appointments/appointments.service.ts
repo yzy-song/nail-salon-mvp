@@ -10,10 +10,6 @@ import { ForbiddenException } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { paginate } from 'src/common/utils/pagination.util';
 
-// ...
-
-// 👇 --- 替换 findAll 方法 --- 👇
-
 @Injectable()
 export class AppointmentsService {
   private readonly logger = new Logger(AppointmentsService.name);
@@ -74,15 +70,23 @@ export class AppointmentsService {
       throw new ConflictException(`该员工在此时间段内已有预约，请选择其他时间`);
     }
 
-    // 5. 如果没有冲突，则创建新预约
-    return this.prisma.appointment.create({
+    // 发送预约成功邮件
+    const appointment = await this.prisma.appointment.create({
       data: {
         userId,
         employeeId,
         serviceId,
         appointmentTime: startTime, // 确保存入的是 Date 对象
       },
+      include: {
+        user: true,
+        service: true,
+      },
     });
+
+    // 发送确认邮件
+    await this.emailService.sendBookingConfirmationEmail(appointment.user, appointment);
+    return appointment;
   }
 
   async cancelMyAppoinment(userId: string, appointmentId: string) {

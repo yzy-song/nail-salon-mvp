@@ -27,6 +27,20 @@ export class EmailService {
     await this.sendEmail(email, subject, html);
   }
 
+  async sendBookingConfirmationEmail(user: User, appointment: Appointment & { service: Service }) {
+    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy年MM月dd日 HH:mm');
+    const subject = '您已成功预约美甲服务';
+    const html = `
+    <h3>Hello, ${user.name || 'My friend'}!</h3>
+    <p>您的美甲预约已成功确认。</p>
+    <p><strong>服务项目:</strong> ${appointment.service.name}</p>
+    <p><strong>服务简介:</strong> ${appointment.service.description}</p>
+    <p><strong>预约时间:</strong> ${appointmentTime}</p>
+    <p>如需变更或取消，请及时联系我们。</p>
+  `;
+    await this.sendEmail(user.email, subject, html);
+  }
+
   async sendBookingStatusUpdateEmail(user: User, appointment: Appointment & { service: Service }) {
     const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy年MM月dd日 HH:mm');
     const subject = `您的预约状态已更新为: ${appointment.status}`;

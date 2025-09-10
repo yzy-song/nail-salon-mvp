@@ -46,9 +46,12 @@ async function bootstrap() {
   );
 
   // 5. 配置 CORS，允许前端应用访问
-  const frontendUrls = (configService.get<string>('FRONTEND_URL') || '').split(',');
+  // const frontendUrls = (configService.get<string>('FRONTEND_URL') || '').split(',').map(url => url.trim());
   app.enableCors({
-    origin: frontendUrls,
+    origin: configService
+      .get('CORS_ORIGINS')
+      .split(',')
+      .map((url) => url.trim()),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization, Accept',
