@@ -385,3 +385,14 @@ This section outlines the development process and the order in which features we
 - **Employee Scheduling**: Implement a system to manage employee working hours and vacations, and validate appointments against their schedules.
 - **User-Side Cancellations**: Allow users to cancel or reschedule their own appointments within a certain time window.
 - **Caching**: Implement a caching layer (e.g., with Redis) for frequently accessed data like the services list to improve performance.
+
+<!-- 如果不小心提交了私密信息相关文件，比如 .env -->
+
+git filter-repo --invert-paths --path apps/api/.env --path apps/api/.env.example
+This is a safety feature. git filter-repo removes your remote connection (origin) to prevent you from accidentally pushing the rewritten history without realizing it.
+You just need to add the remote back and then force-push your clean history to GitHub.
+git remote add origin YOUR_GIR_REPOSITORY
+
+检查.gitignore，将.env放进忽略列表
+
+git push --force origin main

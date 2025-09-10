@@ -4,9 +4,16 @@ const nextConfig: NextConfig = {
   /* config options here */
   images: {
     remotePatterns: [
+      // cloudinary图库
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+      // 占位符图片服务
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
         pathname: '/**',
       },
     ],

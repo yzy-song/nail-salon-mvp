@@ -32,8 +32,7 @@ interface ServiceCardProps {
 
 export const ServiceCard = ({ service }: ServiceCardProps) => {
   // Use the first image as the cover, with a fallback
-  const coverImage = service.images?.[0]?.url || '/placeholder.svg';
-
+  const coverImage = service.images?.[0]?.url || 'https://placehold.co/400x400.png?text=NailSalon';
   return (
     <Card className="flex flex-col">
       <CardHeader>
