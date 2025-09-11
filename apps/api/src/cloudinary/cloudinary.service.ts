@@ -14,7 +14,7 @@ export class CloudinaryService {
           }
           // 如果没有错误，Cloudinary SDK 会保证 result 有值
           // 我们使用类型断言告诉 TypeScript 这是成功的响应
-          resolve(result as UploadApiResponse);
+          resolve(result);
         },
       );
       upload.end(file.buffer);
