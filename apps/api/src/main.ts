@@ -1,6 +1,4 @@
-﻿// apps/api/src/main.ts
-
-import { NestFactory } from '@nestjs/core';
+﻿import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -11,7 +9,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
-import { json } from 'express';
+// import { json } from 'express';
 import { join } from 'path';
 
 async function bootstrap() {
