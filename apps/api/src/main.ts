@@ -80,16 +80,16 @@ async function bootstrap() {
   console.log(`Application is running on: ${await app.getUrl()}`);
 
   // 打印所有注册的路由（仅开发/排查用）
-  const expressApp = app.getHttpAdapter().getInstance();
-  if (expressApp && expressApp._router && expressApp._router.stack) {
-    console.log('Registered routes:');
-    expressApp._router.stack
-      .filter((layer) => layer.route)
-      .forEach((layer) => {
-        const route = layer.route;
-        const methods = Object.keys(route.methods).join(',').toUpperCase();
-        console.log(`${methods} ${route.path}`);
-      });
-  }
+  // const expressApp = app.getHttpAdapter().getInstance();
+  // if (expressApp && expressApp._router && expressApp._router.stack) {
+  //   console.log('Registered routes:');
+  //   expressApp._router.stack
+  //     .filter((layer) => layer.route)
+  //     .forEach((layer) => {
+  //       const route = layer.route;
+  //       const methods = Object.keys(route.methods).join(',').toUpperCase();
+  //       console.log(`${methods} ${route.path}`);
+  //     });
+  // }
 }
 bootstrap();
