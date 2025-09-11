@@ -154,7 +154,7 @@ export class AppointmentsService {
       where: { userId },
       include: {
         employee: { select: { name: true } },
-        service: { select: { name: true } },
+        service: { select: { name: true, price: true } },
       },
     });
   }
