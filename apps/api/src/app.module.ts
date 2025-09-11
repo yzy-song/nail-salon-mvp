@@ -15,7 +15,6 @@ import { TasksModule } from './tasks/tasks.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { MediaModule } from './media/media.module';
 import { FirebaseModule } from './firebase/firebase.module';
-import { PaymentsModule } from './payments/payments.module';
 @Module({
   imports: [
     // 设置.env配置文件为全局可用
@@ -35,7 +34,6 @@ import { PaymentsModule } from './payments/payments.module';
     CloudinaryModule,
     MediaModule,
     FirebaseModule,
-    PaymentsModule,
   ],
   controllers: [AppController], // NestJS 默认创建的 Controller
   providers: [AppService], // NestJS 默认创建的 Service
