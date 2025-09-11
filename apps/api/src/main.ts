@@ -12,6 +12,7 @@ import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { join } from 'path';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -66,6 +67,8 @@ async function bootstrap() {
   // 静态资源服务，提供 public 目录
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
+  // 只对webhook路由使用 raw body
+  app.use('/webhooks/stripe', bodyParser.raw({ type: 'application/json' }));
   // 7. 启动应用
   await app.listen(port, '0.0.0.0');
 

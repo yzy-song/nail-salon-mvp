@@ -12,13 +12,7 @@ export class StripeWebhookController {
     @Headers('stripe-signature') signature: string,
     @Req() req: Request, // We need the raw body
   ) {
-    if (!req.rawBody) {
-      throw new Error('Stripe webhook error: rawBody is missing from request.');
-    }
-    const event = this.webhookService.constructEventFromPayload(
-      signature,
-      req.rawBody, // Use the raw body buffer
-    );
+    const event = this.webhookService.constructEventFromPayload(signature, req.body);
 
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
     const appointmentId = paymentIntent.metadata.appointmentId;
