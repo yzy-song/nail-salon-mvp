@@ -179,4 +179,17 @@ export class AppointmentsService {
     await this.emailService.sendBookingStatusUpdateEmail(appointment.user, updatedAppointment);
     return updatedAppointment;
   }
+
+  async findOneByPaymentIntent(paymentIntentId: string) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { paymentIntentId },
+      include: {
+        // ... include whatever details the status page might need
+      },
+    });
+    if (!appointment) {
+      throw new NotFoundException(`Appointment with paymentIntentId ${paymentIntentId} not found`);
+    }
+    return appointment;
+  }
 }

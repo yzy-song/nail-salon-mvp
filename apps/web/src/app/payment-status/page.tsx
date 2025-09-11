@@ -5,40 +5,58 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertTriangle, Loader } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/lib/api';
 
 const StatusContent = () => {
   const searchParams = useSearchParams();
-  const status = searchParams.get('redirect_status');
+  const paymentIntentId = searchParams.get('payment_intent');
 
-  let title = '';
-  let message = '';
-  let icon = null;
-  let color = '';
+  // Use the paymentIntentId to fetch the true status from our backend
+  const { data: appointment, isLoading, isError } = useQuery({
+    queryKey: ['payment-status', paymentIntentId],
+    queryFn: async () => {
+      if (!paymentIntentId) return null;
+      const response = await api.get(`/appointments/by-intent/${paymentIntentId}`);
+      return response.data.data;
+    },
+    // Keep refetching until we get a final status from the webhook
+    refetchInterval: (query) => 
+      query.state.data?.paymentStatus === 'unpaid' ? 2000 : false,
+    enabled: !!paymentIntentId,
+  });
+
+  if (isLoading || !paymentIntentId) {
+    return <div className="flex flex-col items-center"><Loader className="h-16 w-16 animate-spin text-blue-600" /><p className="mt-4">Confirming payment status...</p></div>;
+  }
+
+  if (isError) {
+    return <div className="text-red-600">Failed to retrieve payment status. Please check &quot;My Appointments&quot;.</div>;
+  }
+
+  const status = appointment?.paymentStatus;
+  let title = '', message = '', icon = null, color = '';
 
   switch (status) {
-    case 'succeeded':
+    case 'paid':
       title = 'Payment Successful!';
-      message = 'Thank you for your payment. Your appointment is confirmed and you will receive an email shortly.';
+      message = 'Your appointment is confirmed. We have sent you a confirmation email.';
       icon = <CheckCircle2 className="h-16 w-16" />;
       color = 'text-green-600';
       break;
-    case 'processing':
-      title = 'Payment Processing';
-      message = 'Your payment is being processed. We will notify you once it is confirmed.';
-      icon = <Loader className="h-16 w-16 animate-spin" />;
-      color = 'text-blue-600';
-      break;
-    case 'requires_payment_method':
+    case 'failed':
+    case 'canceled':
       title = 'Payment Failed';
-      message = 'Your payment failed. Please try again with a different payment method.';
+      message = 'Your payment was not successful. Please try again from the "My Appointments" page.';
       icon = <AlertTriangle className="h-16 w-16" />;
       color = 'text-red-600';
       break;
-    default:
-      title = 'Something went wrong';
-      message = 'An unknown error occurred. Please check your appointments or contact support.';
-      icon = <AlertTriangle className="h-16 w-16" />;
-      color = 'text-gray-600';
+    default: // 'unpaid' or any other status
+      title = 'Payment Processing';
+      message = 'Your payment is processing. This page will update automatically.';
+      icon = <Loader className="h-16 w-16 animate-spin" />;
+      color = 'text-blue-600';
+      break;
   }
 
   return (

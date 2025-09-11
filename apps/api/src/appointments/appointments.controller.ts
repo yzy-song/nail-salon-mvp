@@ -67,4 +67,11 @@ export class AppointmentsController {
   updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateAppointmentStatusDto) {
     return this.appointmentsService.updateStatus(id, updateStatusDto);
   }
+
+  // This endpoint is for the frontend to verify the payment status
+  @Get('by-intent/:intentId')
+  // This should be protected by the regular AuthGuard
+  findOneByPaymentIntent(@Param('intentId') intentId: string) {
+    return this.appointmentsService.findOneByPaymentIntent(intentId);
+  }
 }
