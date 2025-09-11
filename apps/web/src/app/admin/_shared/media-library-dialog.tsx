@@ -65,7 +65,7 @@ export const MediaLibraryDialog: React.FC<MediaLibraryDialogProps> = ({
           {isLoading ? (
             <p>Loading images...</p>
           ) : (
-            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 p-4">
+            <div className="grid grid-cols-4 gap-4 p-4">
               {images?.map((image) => {
                 const isSelected = selectedIds.includes(image.id);
                 return (

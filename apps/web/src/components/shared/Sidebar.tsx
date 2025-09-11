@@ -2,7 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, Scissors, Users, Image as ImageIcon } from 'lucide-react';
+import { Home, Calendar, Scissors, Users, Image as ImageIcon, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
@@ -12,15 +15,14 @@ const navItems = [
   { href: '/admin/media', label: 'Media Library', icon: ImageIcon },
 ];
 
-export const Sidebar = () => {
+const SidebarContent = () => {
   const pathname = usePathname();
-
   return (
-    <aside className="w-64 flex-shrink-0 border-r bg-gray-50">
-      <div className="p-4">
+    <div className="flex h-full flex-col bg-gray-50">
+      <div className="p-4 border-b">
         <h2 className="text-lg font-semibold text-pink-600">Admin Panel</h2>
       </div>
-      <nav className="p-2 space-y-1">
+      <nav className="flex-1 p-2 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -39,6 +41,32 @@ export const Sidebar = () => {
           );
         })}
       </nav>
-    </aside>
+    </div>
+  )
+}
+
+
+export const Sidebar = () => {
+  return (
+    <>
+      {/* Mobile Sidebar (Drawer) */}
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50 bg-white">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="p-0 w-64">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop Sidebar (Fixed) */}
+      <aside className="hidden md:block fixed top-0 left-0 h-full w-64 border-r">
+        <SidebarContent />
+      </aside>
+    </>
   );
 };

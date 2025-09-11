@@ -15,6 +15,7 @@ import { Menu } from 'lucide-react';
 
 export const Navbar = () => {
   const [isClient, setIsClient] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -74,7 +75,7 @@ export const Navbar = () => {
         </div>
       )
     );
-    
+
   const mobileAuthLinks =
     isClient && isLoggedIn && user ? (
       <div className="flex flex-col space-y-4 pt-4 border-t">
@@ -110,13 +111,12 @@ export const Navbar = () => {
           {navLinks}
         </nav>
         <div className="hidden md:flex items-center gap-2">
-            {authLinks}
+          {authLinks}
         </div>
-
 
         {/* Mobile Navigation (Hamburger Menu) */}
         <div className="md:hidden">
-          <Sheet>
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-6 w-6" />
@@ -127,7 +127,29 @@ export const Navbar = () => {
                 <SheetTitle className="text-pink-500">NailSalon</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col items-center justify-center h-full space-y-6 text-lg">
-                {navLinks}
+                <Link
+                  href="/services"
+                  onClick={() => setOpen(false)}
+                  className="text-gray-600 hover:text-pink-500 transition-colors"
+                >
+                  Services
+                </Link>
+                <Link
+                  href="/book"
+                  onClick={() => setOpen(false)}
+                  className="text-gray-600 hover:text-pink-500 transition-colors"
+                >
+                  Book Now
+                </Link>
+                {isClient && user?.role === 'ADMIN' && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setOpen(false)}
+                    className="text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
               </div>
               {mobileAuthLinks}
             </SheetContent>

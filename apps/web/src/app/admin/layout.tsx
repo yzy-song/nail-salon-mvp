@@ -9,9 +9,12 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <AdminGuard>
-      <div className="flex h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100">
         <Sidebar />
-        <main className="flex-1 p-8 overflow-y-auto">
+        {/* Main content area */}
+        {/* On desktop, add left padding to make space for the fixed sidebar */}
+        {/* On mobile, padding is normal as sidebar is a drawer */}
+        <main className="p-4 md:pl-72 md:py-8">
           {children}
         </main>
       </div>
