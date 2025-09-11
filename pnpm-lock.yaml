@@ -53,9 +53,15 @@ importers:
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@types/body':
+        specifier: ^5.1.4
+        version: 5.1.4
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      body-parser:
+        specifier: ^2.2.0
+        version: 2.2.0
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -2611,6 +2617,9 @@ packages:
 
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
+
+  '@types/body@5.1.4':
+    resolution: {integrity: sha512-z84LauGAGEIHg1juZOnnmf4CJaQlj5m1Zdb+2cC4Ezub0oT2ZrJxVK1blHOUJ/uVoi0Hqw+LhFgYHurwaCeang==}
 
   '@types/caseless@0.12.5':
     resolution: {integrity: sha512-hWtVTC2q7hc7xZ/RLbxapMvDMgUnDvKvMOpKal4DrMyfGBUfB1oKaZlIRr6mJL+If3bAP6sV/QneGzF6tJjZDg==}
@@ -9094,6 +9103,10 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
+      '@types/node': 22.18.1
+
+  '@types/body@5.1.4':
+    dependencies:
       '@types/node': 22.18.1
 
   '@types/caseless@0.12.5':

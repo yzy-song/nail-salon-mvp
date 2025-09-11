@@ -1,4 +1,5 @@
-﻿import { NestFactory } from '@nestjs/core';
+﻿// apps/api/src/main.ts
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -7,59 +8,56 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { AppLogger } from './common/utils/logger';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
-import { NestExpressApplication } from '@nestjs/platform-express';
-
-// import { json } from 'express';
-import { join } from 'path';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    // 1. 完全禁用 NestJS 内置的日志，由我们自己的 Winston Logger 全权接管
+  const app = await NestFactory.create(AppModule, {
     logger: false,
   });
 
-  // app.use(
-  //   json({
-  //     verify: (req: any, res, buf) => {
-  //       // Make the raw body available on the request object
-  //       req.rawBody = buf;
-  //     },
-  //   }),
-  // );
-  // 2. 使用 Helmet 增强安全性
-  app.use(helmet());
-  // 3. 使用自定义的 AppLogger
   app.useLogger(new AppLogger());
 
-  // --- Swagger 配置 ---
+  // Use Helmet for security
+  app.use(helmet());
+
+  // We need the raw body for Stripe webhooks
+  const rawBodyBuffer = (req, res, buf, encoding) => {
+    if (buf && buf.length) {
+      req.rawBody = buf;
+    }
+  };
+
+  // Enable raw body parsing for all routes
+  app.use(bodyParser.json({ verify: rawBodyBuffer }));
+  app.use(bodyParser.urlencoded({ verify: rawBodyBuffer, extended: true }));
+
+  // Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle('美甲店预约系统 API')
     .setDescription('这是为美甲店预约系统提供后端服务的 API 文档')
     .setVersion('1.0')
-    .addBearerAuth() // <-- 关键：启用 Bearer Token 授权
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document); // <-- 'api-docs' 是访问路径
-  // --- Swagger 配置结束 ---
+  SwaggerModule.setup('api-docs', app, document);
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3000);
 
-  // 4. 启用我们所有的全局管道、拦截器和过滤器
+  // Global Pipes, Interceptors, and Filters
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
     }),
   );
+  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalFilters(new AllExceptionsFilter());
 
-  // 5. 配置 CORS，允许前端应用访问
-  // const frontendUrls = (configService.get<string>('FRONTEND_URL') || '').split(',').map(url => url.trim());
+  // CORS Configuration
+  const frontendUrls = (configService.get<string>('FRONTEND_URL') || '').split(',');
   app.enableCors({
-    origin: configService
-      .get('CORS_ORIGINS')
-      .split(',')
-      .map((url) => url.trim()),
+    origin: frontendUrls,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization, Accept',
@@ -67,29 +65,9 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  // 6. 启用全局拦截器和过滤器
-  app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalFilters(new AllExceptionsFilter()); // 全局异常过滤器
-
-  // 静态资源服务，提供 public 目录
-  app.useStaticAssets(join(__dirname, '..', 'public'));
-
-  // 7. 启动应用
+  // Start Application
   await app.listen(port, '0.0.0.0');
 
   console.log(`Application is running on: ${await app.getUrl()}`);
-
-  // 打印所有注册的路由（仅开发/排查用）
-  // const expressApp = app.getHttpAdapter().getInstance();
-  // if (expressApp && expressApp._router && expressApp._router.stack) {
-  //   console.log('Registered routes:');
-  //   expressApp._router.stack
-  //     .filter((layer) => layer.route)
-  //     .forEach((layer) => {
-  //       const route = layer.route;
-  //       const methods = Object.keys(route.methods).join(',').toUpperCase();
-  //       console.log(`${methods} ${route.path}`);
-  //     });
-  // }
 }
 bootstrap();
