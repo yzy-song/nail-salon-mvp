@@ -1,4 +1,4 @@
-﻿import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { AppointmentsService } from './appointments.service';
 
 describe('AppointmentsService', () => {

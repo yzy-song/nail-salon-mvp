@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Defines the structure for a paginated result before it's processed
  * by the global interceptor.
  * This is the object that our service methods should return.

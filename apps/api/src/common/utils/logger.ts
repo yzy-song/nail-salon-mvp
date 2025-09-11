@@ -1,4 +1,4 @@
-﻿import { LoggerService, Injectable, Scope } from '@nestjs/common';
+import { LoggerService, Injectable, Scope } from '@nestjs/common';
 import { createLogger, format, transports, Logger } from 'winston';
 // 👇 --- 核心修改在这里 --- 👇
 import * as DailyRotateFile from 'winston-daily-rotate-file';
