@@ -1,17 +1,26 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-// 1. Use import to load the JSON file
-import * as serviceAccount from '../../firebase-service-account-key.json';
+import { readFileSync } from 'fs'; // 1. 导入 Node.js 的文件系统模块
+import { resolve } from 'path';
 
 @Injectable()
 export class FirebaseAdminService implements OnModuleInit {
   onModuleInit() {
     if (admin.apps.length === 0) {
-      admin.initializeApp({
-        // 2. Cast the imported JSON to the correct type
-        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-      });
-      console.log('Firebase Admin initialized.');
+      try {
+        // 2. 在运行时，从文件系统中同步读取文件内容
+        const serviceAccountPath = resolve('./firebase-service-account-key.json');
+        const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
+
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+        console.log('Firebase Admin initialized successfully from file.');
+      } catch (error) {
+        console.error('Failed to initialize Firebase Admin:', error);
+        // 在生产环境中，如果Firebase初始化失败，可能需要让应用崩溃
+        // process.exit(1);
+      }
     }
   }
 
