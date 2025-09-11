@@ -20,14 +20,14 @@ async function bootstrap() {
     logger: false,
   });
 
-  app.use(
-    json({
-      verify: (req: any, res, buf) => {
-        // Make the raw body available on the request object
-        req.rawBody = buf;
-      },
-    }),
-  );
+  // app.use(
+  //   json({
+  //     verify: (req: any, res, buf) => {
+  //       // Make the raw body available on the request object
+  //       req.rawBody = buf;
+  //     },
+  //   }),
+  // );
   // 2. 使用 Helmet 增强安全性
   app.use(helmet());
   // 3. 使用自定义的 AppLogger
