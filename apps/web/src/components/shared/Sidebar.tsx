@@ -2,10 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar, Scissors, Users, Image as ImageIcon, Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Home, Calendar, Scissors, Users, Image as ImageIcon } from 'lucide-react';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
@@ -15,7 +12,7 @@ const navItems = [
   { href: '/admin/media', label: 'Media Library', icon: ImageIcon },
 ];
 
-const SidebarContent = () => {
+export const Sidebar = () => {
   const pathname = usePathname();
   return (
     <div className="flex h-full flex-col bg-gray-50">
@@ -42,31 +39,5 @@ const SidebarContent = () => {
         })}
       </nav>
     </div>
-  )
-}
-
-
-export const Sidebar = () => {
-  return (
-    <>
-      {/* Mobile Sidebar (Drawer) */}
-      <div className="md:hidden">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="fixed top-4 left-4 z-50 bg-white">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="p-0 w-64">
-            <SidebarContent />
-          </SheetContent>
-        </Sheet>
-      </div>
-
-      {/* Desktop Sidebar (Fixed) */}
-      <aside className="hidden md:block fixed top-0 left-0 h-full w-64 border-r">
-        <SidebarContent />
-      </aside>
-    </>
   );
 };

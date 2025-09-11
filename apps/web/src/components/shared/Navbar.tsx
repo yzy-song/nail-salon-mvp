@@ -118,11 +118,14 @@ export const Navbar = () => {
         <div className="md:hidden">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <button
+                className="fixed top-4 right-4 z-50 p-2 rounded bg-white border shadow size-10 flex items-center justify-center"
+                aria-label="Open menu"
+              >
                 <Menu className="h-6 w-6" />
-              </Button>
+              </button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="inset-0 w-full h-full max-w-full p-0 bg-white flex flex-col items-center justify-center transition-all duration-300">
               <SheetHeader>
                 <SheetTitle className="text-pink-500">NailSalon</SheetTitle>
               </SheetHeader>
