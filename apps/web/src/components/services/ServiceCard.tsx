@@ -23,7 +23,7 @@ export interface Service {
   description: string | null;
   price: number;
   duration: number;
-  images: ServiceImage[];
+  images: ServiceImage[]; // <-- 从 serviceImages 修改为 images
 }
 
 interface ServiceCardProps {
@@ -34,7 +34,7 @@ interface ServiceCardProps {
 export const ServiceCard = ({ service }: ServiceCardProps) => {
   // 获取封面图代码中的核心修改
   const coverImage = service.images?.[0]?.url || 'https://placehold.co/400x400.png?text=NailSalon';
-  console.log('ServiceCard coverImage:', coverImage);
+  
   return (
     <Card className="flex flex-col">
       <CardHeader>
