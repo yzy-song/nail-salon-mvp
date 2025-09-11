@@ -14,6 +14,7 @@ interface CheckoutClientProps {
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
+console.log('stripe key', process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export const CheckoutClient = ({ appointmentId }: CheckoutClientProps) => {
   const [clientSecret, setClientSecret] = useState('');
