@@ -3,12 +3,8 @@ import { Suspense } from 'react';
 
 // This is the main Page, a simple Server Component.
 // It receives params directly from Next.js.
-export default async function CheckoutPage({
-  params,
-}: {
-  params: { appointmentId: string };
-}) {
-  const { appointmentId } = await params;
+export default async function CheckoutPage(props: any) {
+  const { appointmentId } = await props.params;
   // It passes the ID down to the client component.
   // We wrap it in Suspense as a best practice for client components.
   return (
