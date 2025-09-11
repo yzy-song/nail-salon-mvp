@@ -35,7 +35,7 @@ import { PaymentsModule } from './payments/payments.module';
     CloudinaryModule,
     MediaModule,
     FirebaseModule,
-    // PaymentsModule,
+    PaymentsModule,
   ],
   controllers: [AppController], // NestJS 默认创建的 Controller
   providers: [AppService], // NestJS 默认创建的 Service

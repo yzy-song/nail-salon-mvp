@@ -1,57 +1,18 @@
-// apps/web/src/app/checkout/[appointmentId]/page.tsx
-'use client';
+import { CheckoutClient } from './_components/checkout-client';
+import { Suspense } from 'react';
 
-import { useEffect, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import { CheckoutForm } from './_components/checkout-form';
-import api from '@/lib/api';
-
-// Define the props type that Next.js passes to a dynamic page
-interface CheckoutPageProps {
-  params: {
-    appointmentId: string;
-  };
-}
-
-// Load Stripe once outside the component
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-);
-
-const CheckoutPage = ({ params }: CheckoutPageProps) => {
-  const [clientSecret, setClientSecret] = useState('');
-  const { appointmentId } = params;
-
-  useEffect(() => {
-    // Fetch the client secret as soon as the component mounts
-    const createIntent = async () => {
-      if (!appointmentId) return;
-      try {
-        const response = await api.post('/payments/create-intent', {
-          appointmentId: appointmentId,
-        });
-        setClientSecret(response.data.data.clientSecret);
-      } catch (error) {
-        console.error("Failed to create payment intent", error);
-      }
-    };
-    createIntent();
-  }, [appointmentId]);
-
+// This is the main Page, a simple Server Component.
+// It receives params directly from Next.js.
+export default function CheckoutPage({
+  params,
+}: {
+  params: { appointmentId: string };
+}) {
+  // It passes the ID down to the client component.
+  // We wrap it in Suspense as a best practice for client components.
   return (
-    <div className="container mx-auto py-12 max-w-md">
-      <h1 className="text-3xl font-bold mb-6 text-center">Complete Your Payment</h1>
-      {clientSecret ? (
-        <Elements options={{ clientSecret }} stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      ) : (
-        // Show a loading state while the client secret is being fetched
-        <div className="text-center">Loading payment details...</div>
-      )}
-    </div>
+    <Suspense fallback={<div className="container mx-auto py-12 text-center">Loading...</div>}>
+      <CheckoutClient appointmentId={params.appointmentId} />
+    </Suspense>
   );
-};
-
-export default CheckoutPage;
+}
