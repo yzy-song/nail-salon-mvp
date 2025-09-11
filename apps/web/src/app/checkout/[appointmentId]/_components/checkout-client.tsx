@@ -12,10 +12,10 @@ interface CheckoutClientProps {
 }
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY||'pk_test_51S5l9e6M0xs8zGrRNwKsogzf7oL1LV8mmuvgnHM0I2ZuvMCFwpXX38yYm0ZSzW3pe0HnMsCjRFbbC8JWPuhGM2zC00nJvt0j3j',
 );
 console.log('stripe key', process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-console.log('environment variable test', process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+console.log('stripe key variable 222test', process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export const CheckoutClient = ({ appointmentId }: CheckoutClientProps) => {
   const [clientSecret, setClientSecret] = useState('');
