@@ -33,5 +33,10 @@ export const GoogleLoginButton = () => {
     }
   };
 
-  return <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>Sign in with Google</Button>;
+  return (
+    <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+      <img src="/google-color.svg" alt="Google" className="w-5 h-5" />
+      Sign in with Google
+    </Button>
+  );
 };
