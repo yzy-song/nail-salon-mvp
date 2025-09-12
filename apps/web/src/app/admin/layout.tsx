@@ -16,19 +16,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <AdminGuard>
       <div className="min-h-screen bg-gray-100">
-        {/* 移动端 Sheet 抽屉 */}
-        <div className="md:hidden">
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <button className="fixed top-4 left-4 z-50 p-2 rounded bg-white border shadow">
-                <Menu className="h-6 w-6" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-64">
-              <Sidebar />
-            </SheetContent>
-          </Sheet>
-        </div>
+  {/* 移动端不再显示admin侧边栏菜单按钮，只保留桌面端Sidebar */}
         {/* 桌面端固定 Sidebar */}
         <aside className="hidden md:block fixed top-0 left-0 h-full w-64 border-r bg-white">
           <Sidebar />

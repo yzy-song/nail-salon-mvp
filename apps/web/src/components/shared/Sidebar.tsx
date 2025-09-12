@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Calendar, Scissors, Users, Image as ImageIcon } from 'lucide-react';
 
-const navItems = [
+export const navItems = [
   { href: '/admin', label: 'Dashboard', icon: Home },
   { href: '/admin/appointments', label: 'Appointments', icon: Calendar },
   { href: '/admin/services', label: 'Services', icon: Scissors },
