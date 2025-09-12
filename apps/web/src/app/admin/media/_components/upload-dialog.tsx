@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import {Dialog,DialogContent, DialogHeader,DialogTitle,DialogTrigger} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
@@ -62,12 +62,7 @@ export const UploadDialog = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="pictures">Pictures</Label>
-            <Input
-              id="pictures"
-              type="file"
-              multiple
-              onChange={(e) => setFiles(e.target.files)}
-            />
+            <Input id="pictures" type="file" multiple onChange={(e) => setFiles(e.target.files)} />
           </div>
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? 'Uploading...' : 'Upload'}

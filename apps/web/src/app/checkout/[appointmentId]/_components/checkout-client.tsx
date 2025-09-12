@@ -12,7 +12,8 @@ interface CheckoutClientProps {
 }
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY||'pk_test_51S5l9e6M0xs8zGrRNwKsogzf7oL1LV8mmuvgnHM0I2ZuvMCFwpXX38yYm0ZSzW3pe0HnMsCjRFbbC8JWPuhGM2zC00nJvt0j3j',
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+    'pk_test_51S5l9e6M0xs8zGrRNwKsogzf7oL1LV8mmuvgnHM0I2ZuvMCFwpXX38yYm0ZSzW3pe0HnMsCjRFbbC8JWPuhGM2zC00nJvt0j3j',
 );
 console.log('stripe key', process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -36,9 +37,7 @@ export const CheckoutClient = ({ appointmentId }: CheckoutClientProps) => {
 
   return (
     <div className="container mx-auto py-12 max-w-md">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Complete Your Payment
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Complete Your Payment</h1>
       {clientSecret ? (
         <Elements options={{ clientSecret }} stripe={stripePromise}>
           <CheckoutForm />

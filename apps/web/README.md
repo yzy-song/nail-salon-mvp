@@ -62,3 +62,15 @@ export async function getStaticProps() {
   }
 }
 ```
+
+如果下面这样的写法eslint报错
+
+```html
+<form onSubmit="{form.handleSubmit(onSubmit)}" className="space-y-4"></form>
+```
+
+改成下面的写法
+
+```html
+<form onSubmit="{(e)" ="">void form.handleSubmit(onSubmit)(e)} className="space-y-4"></form>
+```

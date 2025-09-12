@@ -4,14 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+
 import { format } from 'date-fns';
 
 import { CellAction } from './cell-action';
@@ -50,10 +43,7 @@ export const columns: ColumnDef<Appointment>[] = [
     accessorKey: 'appointmentTime',
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
           Date & Time
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
@@ -72,12 +62,13 @@ export const columns: ColumnDef<Appointment>[] = [
       if (status === 'CONFIRMED') variant = 'default';
       if (status === 'CANCELLED') variant = 'destructive';
       if (status === 'COMPLETED') variant = 'outline';
-      
+
       return <Badge variant={variant}>{status}</Badge>;
     },
   },
   {
     id: 'actions',
     cell: ({ row }) => <CellAction data={row.original} />,
-    header: () => <span className="sr-only">Actions</span>,},
+    header: () => <span className="sr-only">Actions</span>,
+  },
 ];

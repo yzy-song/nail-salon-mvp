@@ -18,7 +18,11 @@ const fetchDashboardStats = async (): Promise<DashboardStats> => {
 };
 
 const DashboardPage = () => {
-  const { data: stats, isLoading, isError } = useQuery({
+  const {
+    data: stats,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['dashboardStats'],
     queryFn: fetchDashboardStats,
   });
@@ -36,9 +40,7 @@ const DashboardPage = () => {
         <StatCard title="Appointments Today" value={stats?.todaysAppointments || 0} icon={Scissors} />
       </div>
 
-      <div className="mt-8">
-        {/* We will add charts and recent activity here later */}
-      </div>
+      <div className="mt-8">{/* We will add charts and recent activity here later */}</div>
     </div>
   );
 };

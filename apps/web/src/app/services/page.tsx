@@ -20,7 +20,7 @@ async function getServices(): Promise<Service[]> {
   try {
     // The response data will be an array of our raw type
     const response = await api.get<{ data: RawServiceData[] }>('/services');
-    
+
     // 3. Map the raw data to the clean component type, no `any` needed!
     const servicesData = response.data.data.map((service) => {
       // TypeScript now understands the shape of `service` perfectly
@@ -43,9 +43,7 @@ const ServicesPage = async () => {
     <div className="container mx-auto py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight">Our Services</h1>
-        <p className="mt-4 text-lg text-gray-600">
-          Choose from our wide range of professional nail services.
-        </p>
+        <p className="mt-4 text-lg text-gray-600">Choose from our wide range of professional nail services.</p>
       </div>
       {services.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

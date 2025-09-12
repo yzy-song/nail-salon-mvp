@@ -11,13 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Edit, Trash } from 'lucide-react';
 import { Service } from '@/components/services/ServiceCard';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ServiceForm, ServiceFormValues } from './service-form';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -33,17 +27,16 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const queryClient = useQueryClient();
 
   const { mutate: updateService, isPending: isUpdatePending } = useMutation({
-
     mutationFn: (values: ServiceFormValues) => {
-    // Convert price and duration back to numbers before sending to API
-    const numericValues = {
-      ...values,
-      price: parseFloat(values.price),
-      duration: parseInt(values.duration, 10),
-    };
-    return api.patch(`/services/${data.id}`, numericValues);
-  },
-    
+      // Convert price and duration back to numbers before sending to API
+      const numericValues = {
+        ...values,
+        price: parseFloat(values.price),
+        duration: parseInt(values.duration, 10),
+      };
+      return api.patch(`/services/${data.id}`, numericValues);
+    },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-services'] });
       toast.success('Service updated successfully!');
@@ -98,11 +91,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DialogHeader>
             <DialogTitle>Edit Service</DialogTitle>
           </DialogHeader>
-          <ServiceForm
-            defaultValues={formDefaultValues}
-            onSubmit={updateService}
-            isPending={isUpdatePending}
-          />
+          <ServiceForm defaultValues={formDefaultValues} onSubmit={updateService} isPending={isUpdatePending} />
         </DialogContent>
       </Dialog>
     </>

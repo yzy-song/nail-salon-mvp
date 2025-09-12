@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 interface BookingState {
   step: number;
@@ -27,6 +27,5 @@ export const useBookingStore = create<BookingState>((set) => ({
   setEmployeeId: (id) => set({ employeeId: id, step: 3 }), // Select employee, auto go to step 3
   setDate: (date) => set({ date }),
   setTime: (time) => set({ time, step: 4 }), // Select time, auto go to step 4
-  reset: () =>
-    set({ step: 1, serviceId: null, employeeId: null, date: null, time: null }),
+  reset: () => set({ step: 1, serviceId: null, employeeId: null, date: null, time: null }),
 }));

@@ -26,7 +26,7 @@ const RegisterPage = () => {
 
         {/* Google Login Button */}
         <GoogleLoginButton />
-        
+
         {/* Link to Login Page */}
         <div className="text-sm text-center text-gray-500">
           {'Already have an account? '}

@@ -4,14 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -46,18 +39,14 @@ export function LoginForm() {
       setUser(profileResponse.data.data);
 
       toast.success('Login Successful!', {
-        description: `Welcome back, ${
-          profileResponse.data.data.name || profileResponse.data.data.email
-        }!`,
+        description: `Welcome back, ${profileResponse.data.data.name || profileResponse.data.data.email}!`,
       });
 
       router.push('/');
     } catch (error: any) {
       toast.error('Login Failed', {
-        description:
-          error.response?.data?.message || 'An unexpected error occurred.',
+        description: error.response?.data?.message || 'An unexpected error occurred.',
       });
-
     }
   }
 
@@ -90,13 +79,12 @@ export function LoginForm() {
         )}
       />
       <Button
-          type="submit"
-          onClick={form.handleSubmit(onSubmit)}
-          className="w-full py-3 text-lg font-semibold bg-pink-500 hover:bg-pink-600 text-white rounded-md"
-        >
-          Login
+        type="submit"
+        onClick={(e) => void form.handleSubmit(onSubmit)(e)}
+        className="w-full py-3 text-lg font-semibold bg-pink-500 hover:bg-pink-600 text-white rounded-md"
+      >
+        Login
       </Button>
-      
     </Form>
   );
 }

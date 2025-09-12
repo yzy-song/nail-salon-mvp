@@ -26,20 +26,20 @@ export const CheckoutForm = () => {
       },
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
+    if (error.type === 'card_error' || error.type === 'validation_error') {
       toast.error(error.message);
     } else {
-      toast.error("An unexpected error occurred.");
+      toast.error('An unexpected error occurred.');
     }
 
     setIsLoading(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={() => void handleSubmit} className="w-full">
       <PaymentElement />
       <Button disabled={isLoading || !stripe || !elements} className="w-full mt-4">
-        <span>{isLoading ? "Processing..." : "Pay Now"}</span>
+        <span>{isLoading ? 'Processing...' : 'Pay Now'}</span>
       </Button>
     </form>
   );

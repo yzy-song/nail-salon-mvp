@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { LucideIcon } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LucideIcon } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
@@ -18,5 +18,5 @@ export const StatCard = ({ title, value, icon: Icon }: StatCardProps) => {
         <div className="text-2xl font-bold">{value}</div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

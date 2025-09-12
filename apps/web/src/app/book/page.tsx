@@ -10,9 +10,9 @@ import { BookingProgress } from './_components/BookingProgress';
 
 const BookingPageContent = () => {
   const { step, serviceId, setServiceId } = useBookingStore();
-  
+
   const searchParams = useSearchParams();
-  
+
   // This effect runs once to check if a serviceId was passed in the URL
   useEffect(() => {
     const urlServiceId = searchParams.get('serviceId');
@@ -41,15 +41,14 @@ const BookingPageContent = () => {
       {renderStep()}
     </div>
   );
-}
-
+};
 
 const BookingPage = () => {
   return (
-      <Suspense fallback={<div className="container mx-auto py-12">Loading...</div>}>
-        <BookingPageContent />
-      </Suspense>
+    <Suspense fallback={<div className="container mx-auto py-12">Loading...</div>}>
+      <BookingPageContent />
+    </Suspense>
   );
-}
+};
 
 export default BookingPage;

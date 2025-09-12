@@ -6,13 +6,7 @@ import { columns } from './_components/columns';
 import { DataTable } from '../appointments/_components/data-table';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { EmployeeForm } from './_components/employee-form';
 import { useState } from 'react';
 import { toast } from 'sonner';

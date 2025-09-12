@@ -12,8 +12,7 @@ export const HeroSection = () => {
       <div
         className="absolute inset-0 bg-cover bg-center z-0 scale-110 blur-sm"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1604654894610-df62318583e7?q=80&w=2070')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1604654894610-df62318583e7?q=80&w=2070')",
         }}
       />
       {/* Overlay */}
@@ -23,12 +22,10 @@ export const HeroSection = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        transition={{ duration: 0.8, ease: 'easeInOut' }}
         className="relative z-20 text-center p-4"
       >
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-shadow-lg">
-          Artistry at Your Fingertips
-        </h1>
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-shadow-lg">Artistry at Your Fingertips</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-gray-200 text-shadow">
           Experience unparalleled nail care and design from our expert technicians.
         </p>

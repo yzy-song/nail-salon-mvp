@@ -24,8 +24,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const queryClient = useQueryClient();
 
   const { mutate: updateStatus, isPending } = useMutation({
-    mutationFn: (status: AppointmentStatus) =>
-      api.patch(`/appointments/${data.id}/status`, { status }),
+    mutationFn: (status: AppointmentStatus) => api.patch(`/appointments/${data.id}/status`, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-appointments'] });
       toast.success('Appointment status updated!');
@@ -47,9 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(data.id)}>
-          Copy ID
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => void navigator.clipboard.writeText(data.id)}>Copy ID</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Change Status</DropdownMenuLabel>
         <DropdownMenuItem

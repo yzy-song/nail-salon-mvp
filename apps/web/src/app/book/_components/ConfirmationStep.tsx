@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useQuery } from '@tanstack/react-query'; // We'll add this for fetching details
 
 // A simple fetcher function
-const fetcher = (url: string) => api.get(url).then(res => res.data.data);
+const fetcher = (url: string) => api.get(url).then((res) => res.data.data);
 
 export const ConfirmationStep = () => {
   const { serviceId, employeeId, date, time, reset } = useBookingStore();
@@ -36,7 +36,7 @@ export const ConfirmationStep = () => {
       router.push('/login');
       return;
     }
-    
+
     if (!serviceId || !employeeId || !date || !time) {
       toast.error('Please complete all previous steps.');
       return;
@@ -63,7 +63,7 @@ export const ConfirmationStep = () => {
       });
     }
   };
-  
+
   const isLoading = isServiceLoading || isEmployeeLoading;
 
   return (
@@ -75,16 +75,28 @@ export const ConfirmationStep = () => {
           <CardDescription>Please review your appointment details below.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isLoading ? <p>Loading summary...</p> : (
+          {isLoading ? (
+            <p>Loading summary...</p>
+          ) : (
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span>Service:</span> <span className="font-semibold">{service?.name}</span></div>
-              <div className="flex justify-between"><span>Employee:</span> <span className="font-semibold">{employee?.name}</span></div>
-              <div className="flex justify-between"><span>Date:</span> <span className="font-semibold">{date?.toLocaleDateString()}</span></div>
-              <div className="flex justify-between"><span>Time:</span> <span className="font-semibold">{time}</span></div>
-              <div className="flex justify-between border-t pt-2 mt-2 text-base"><strong>Total Price:</strong> <strong className="text-pink-500">€{service?.price}</strong></div>
+              <div className="flex justify-between">
+                <span>Service:</span> <span className="font-semibold">{service?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Employee:</span> <span className="font-semibold">{employee?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Date:</span> <span className="font-semibold">{date?.toLocaleDateString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Time:</span> <span className="font-semibold">{time}</span>
+              </div>
+              <div className="flex justify-between border-t pt-2 mt-2 text-base">
+                <strong>Total Price:</strong> <strong className="text-pink-500">€{service?.price}</strong>
+              </div>
             </div>
           )}
-          <Button onClick={handleSubmitBooking} className="w-full" disabled={isLoading}>
+          <Button onClick={() => void handleSubmitBooking()} className="w-full" disabled={isLoading}>
             Confirm & Book Now
           </Button>
         </CardContent>

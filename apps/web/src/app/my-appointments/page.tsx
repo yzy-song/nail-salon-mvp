@@ -17,15 +17,19 @@ type Appointment = {
   paymentStatus: string | null;
   service: { name: string; price: number };
   employee: { name: string };
-}
+};
 
 const fetchMyAppointments = async (): Promise<Appointment[]> => {
   const response = await api.get('/appointments/mine');
   return response.data.data;
-}
+};
 
 const MyAppointmentsContent = () => {
-  const { data: appointments, isLoading, isError } = useQuery({
+  const {
+    data: appointments,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['my-appointments'],
     queryFn: fetchMyAppointments,
   });
@@ -38,7 +42,7 @@ const MyAppointmentsContent = () => {
       <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
       <div className="space-y-4">
         {appointments && appointments.length > 0 ? (
-          appointments.map(app => (
+          appointments.map((app) => (
             <Card key={app.id}>
               <CardHeader>
                 <CardTitle>{app.service.name}</CardTitle>
@@ -65,14 +69,14 @@ const MyAppointmentsContent = () => {
       </div>
     </div>
   );
-}
+};
 
 const MyAppointmentsPage = () => {
   return (
     <AuthGuard>
       <MyAppointmentsContent />
     </AuthGuard>
-  )
-}
+  );
+};
 
 export default MyAppointmentsPage;

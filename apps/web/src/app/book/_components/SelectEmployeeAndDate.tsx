@@ -6,18 +6,22 @@ import api from '@/lib/api';
 import { Calendar } from '@/components/ui/calendar';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // A mock list of available times. In a real app, this would come from the backend.
 const MOCK_AVAILABLE_TIMES = [
-  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-  '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
 ];
 
 export const SelectEmployeeAndDate = () => {
@@ -70,17 +74,17 @@ export const SelectEmployeeAndDate = () => {
               <RadioGroup onValueChange={setTime} className="space-y-2">
                 <h3 className="font-semibold">Available Times:</h3>
                 <div className="grid grid-cols-3 gap-2">
-                {MOCK_AVAILABLE_TIMES.map((time) => (
-                  <div key={time}>
-                    <RadioGroupItem value={time} id={time} className="peer sr-only" />
-                    <Label
-                      htmlFor={time}
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                    >
-                      {time}
-                    </Label>
-                  </div>
-                ))}
+                  {MOCK_AVAILABLE_TIMES.map((time) => (
+                    <div key={time}>
+                      <RadioGroupItem value={time} id={time} className="peer sr-only" />
+                      <Label
+                        htmlFor={time}
+                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      >
+                        {time}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
               </RadioGroup>
             )}

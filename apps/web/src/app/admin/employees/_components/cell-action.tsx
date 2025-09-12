@@ -9,13 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Edit, Trash } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { EmployeeForm } from './employee-form';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -80,11 +74,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DialogHeader>
             <DialogTitle>Edit Employee</DialogTitle>
           </DialogHeader>
-          <EmployeeForm
-            initialData={data}
-            onSubmit={updateEmployee}
-            isPending={isUpdatePending}
-          />
+          <EmployeeForm initialData={data} onSubmit={updateEmployee} isPending={isUpdatePending} />
         </DialogContent>
       </Dialog>
     </>

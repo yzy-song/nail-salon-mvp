@@ -27,9 +27,7 @@ export const Sidebar = () => {
               key={item.href}
               href={item.href}
               className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                isActive
-                  ? 'bg-pink-100 text-pink-700'
-                  : 'text-gray-600 hover:bg-gray-100'
+                isActive ? 'bg-pink-100 text-pink-700' : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
               <item.icon className="mr-3 h-5 w-5" />

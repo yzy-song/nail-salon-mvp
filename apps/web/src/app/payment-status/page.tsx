@@ -13,7 +13,11 @@ const StatusContent = () => {
   const paymentIntentId = searchParams.get('payment_intent');
 
   // Use the paymentIntentId to fetch the true status from our backend
-  const { data: appointment, isLoading, isError } = useQuery({
+  const {
+    data: appointment,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['payment-status', paymentIntentId],
     queryFn: async () => {
       if (!paymentIntentId) return null;
@@ -21,21 +25,30 @@ const StatusContent = () => {
       return response.data.data;
     },
     // Keep refetching until we get a final status from the webhook
-    refetchInterval: (query) => 
-      query.state.data?.paymentStatus === 'unpaid' ? 2000 : false,
+    refetchInterval: (query) => (query.state.data?.paymentStatus === 'unpaid' ? 2000 : false),
     enabled: !!paymentIntentId,
   });
 
   if (isLoading || !paymentIntentId) {
-    return <div className="flex flex-col items-center"><Loader className="h-16 w-16 animate-spin text-blue-600" /><p className="mt-4">Confirming payment status...</p></div>;
+    return (
+      <div className="flex flex-col items-center">
+        <Loader className="h-16 w-16 animate-spin text-blue-600" />
+        <p className="mt-4">Confirming payment status...</p>
+      </div>
+    );
   }
 
   if (isError) {
-    return <div className="text-red-600">Failed to retrieve payment status. Please check &quot;My Appointments&quot;.</div>;
+    return (
+      <div className="text-red-600">Failed to retrieve payment status. Please check &quot;My Appointments&quot;.</div>
+    );
   }
 
   const status = appointment?.paymentStatus;
-  let title = '', message = '', icon = null, color = '';
+  let title = '',
+    message = '',
+    icon = null,
+    color = '';
 
   switch (status) {
     case 'paid':

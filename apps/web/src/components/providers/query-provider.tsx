@@ -7,9 +7,5 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   // Create the client once per component lifecycle
   const [queryClient] = useState(() => new QueryClient());
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };

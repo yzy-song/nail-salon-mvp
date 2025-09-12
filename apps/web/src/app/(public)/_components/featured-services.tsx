@@ -40,7 +40,7 @@ export const FeaturedServices = () => {
         console.error('Fetched data is not an array:', servicesFromApi);
         return [];
       }
-      
+
       // Flatten the data structure to match what ServiceCard expects
       const servicesData = servicesFromApi.map((service: any) => {
         if (!service.serviceImages) return { ...service, images: [] };
@@ -48,7 +48,7 @@ export const FeaturedServices = () => {
         const images = serviceImages.map((si: any) => si.image);
         return { ...restService, images };
       });
-      
+
       // Return only the first 3 services for the homepage
       return servicesData.slice(0, 3);
     },

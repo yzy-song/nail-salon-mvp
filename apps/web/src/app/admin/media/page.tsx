@@ -24,9 +24,11 @@ const MediaPage = () => {
       return response.data.data;
     },
   });
-  
+
   // Single delete mutation
-  const { mutate: deleteImage, isPending: isDeleting } = useMutation({ mutationFn: (id: string) => api.delete(`/media/${id}`) });
+  const { mutate: deleteImage, isPending: isDeleting } = useMutation({
+    mutationFn: (id: string) => api.delete(`/media/${id}`),
+  });
 
   // Batch delete mutation
   const { mutate: deleteBatch, isPending: isBatchDeleting } = useMutation({
@@ -42,9 +44,7 @@ const MediaPage = () => {
   });
 
   const handleSelectImage = (id: string) => {
-    setSelectedImages((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setSelectedImages((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
   const handleBatchDelete = () => {
@@ -61,11 +61,7 @@ const MediaPage = () => {
         <h1 className="text-3xl font-bold">Media Library</h1>
         <div className="flex items-center gap-2">
           {selectedImages.length > 0 && (
-            <Button 
-              variant="destructive" 
-              onClick={handleBatchDelete} 
-              disabled={isBatchDeleting}
-            >
+            <Button variant="destructive" onClick={handleBatchDelete} disabled={isBatchDeleting}>
               <Trash className="mr-2 h-4 w-4" />
               Delete ({selectedImages.length})
             </Button>

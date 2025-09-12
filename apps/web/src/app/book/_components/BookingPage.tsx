@@ -13,7 +13,6 @@ import { useSearchParams } from 'next/navigation';
 import { SelectService } from './SelectService';
 import { SelectEmployeeAndDate } from './SelectEmployeeAndDate';
 
-
 // Confirmation Step Component
 const ConfirmationStep = () => {
   const { serviceId, employeeId, date, time, reset } = useBookingStore();
@@ -26,7 +25,7 @@ const ConfirmationStep = () => {
       router.push('/login');
       return;
     }
-    
+
     if (!serviceId || !employeeId || !date || !time) {
       toast.error('Please complete all previous steps.');
       return;
@@ -53,19 +52,26 @@ const ConfirmationStep = () => {
       });
     }
   };
-  
+
   // You would typically show a summary of the booking here
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Step 4: Confirm Your Booking</h2>
       <Card>
-        <CardHeader><CardTitle>Booking Summary</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Booking Summary</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-4">
           <p>Service ID: {serviceId}</p>
           <p>Employee ID: {employeeId}</p>
           <p>Date: {date?.toLocaleDateString()}</p>
           <p>Time: {time}</p>
-          <Button onClick={handleSubmitBooking} className="w-full">
+          <Button
+            onClick={() => {
+              void handleSubmitBooking();
+            }}
+            className="w-full"
+          >
             Confirm & Book Now
           </Button>
         </CardContent>
@@ -74,12 +80,11 @@ const ConfirmationStep = () => {
   );
 };
 
-
 const BookingPage = () => {
   const { step, serviceId, setServiceId } = useBookingStore();
-  
+
   const searchParams = useSearchParams();
-  
+
   // This effect runs once to check if a serviceId was passed in the URL
   useEffect(() => {
     const urlServiceId = searchParams.get('serviceId');
@@ -102,11 +107,7 @@ const BookingPage = () => {
     }
   };
 
-  return (
-    <div className="container mx-auto py-12">
-      {renderStep()}
-    </div>
-  );
+  return <div className="container mx-auto py-12">{renderStep()}</div>;
 };
 
 export default BookingPage;

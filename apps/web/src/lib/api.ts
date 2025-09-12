@@ -1,6 +1,5 @@
-// apps/web/src/lib/api.ts
-import axios from "axios";
-import { useAuthStore } from "@/store/auth.store";
+import axios from 'axios';
+import { useAuthStore } from '@/store/auth.store';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -16,8 +15,8 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
-  }
+    return Promise.reject(new Error(error));
+  },
 );
 
 // Optional: Add a response interceptor to handle 401 errors globally
@@ -30,8 +29,8 @@ api.interceptors.response.use(
       // Optionally, redirect to login page
       // window.location.href = '/login';
     }
-    return Promise.reject(error);
-  }
+    return Promise.reject(new Error(error?.message || 'Unknown error'));
+  },
 );
 
 export default api;

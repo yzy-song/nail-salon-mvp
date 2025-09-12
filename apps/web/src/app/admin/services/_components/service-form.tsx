@@ -4,17 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Service } from '@/components/services/ServiceCard';
 import { useState } from 'react';
 import { MediaLibraryDialog } from '../../_shared/media-library-dialog';
 import Image from 'next/image';
@@ -25,7 +17,7 @@ import { ImageType } from '../../media/_components/image-card';
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Name is required.' }),
   description: z.string().optional(),
-  
+
   // Treat price and duration as strings during form validation
   price: z.string().min(1, { message: 'Price is required.' }),
   duration: z.string().min(1, { message: 'Duration is required.' }),
@@ -41,11 +33,7 @@ interface ServiceFormProps {
   isPending: boolean;
 }
 
-export const ServiceForm: React.FC<ServiceFormProps> = ({
-  defaultValues,
-  onSubmit,
-  isPending,
-}) => {
+export const ServiceForm: React.FC<ServiceFormProps> = ({ defaultValues, onSubmit, isPending }) => {
   const [isMediaDialogOpen, setIsMediaDialogOpen] = useState(false);
 
   const form = useForm<ServiceFormValues>({
@@ -66,9 +54,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
     queryFn: async () => {
       if (imageIds.length === 0) return [];
       const response = await api.get('/media');
-      return response.data.data.filter((img: ImageType) =>
-        imageIds.includes(img.id),
-      );
+      return response.data.data.filter((img: ImageType) => imageIds.includes(img.id));
     },
     enabled: imageIds.length > 0,
   });
@@ -76,7 +62,8 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4"> */}
+        <form onSubmit={(e) => void form.handleSubmit(onSubmit)(e)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
@@ -97,11 +84,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Describe the service..."
-                    {...field}
-                    value={field.value ?? ''}
-                  />
+                  <Textarea placeholder="Describe the service..." {...field} value={field.value ?? ''} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -140,11 +123,7 @@ export const ServiceForm: React.FC<ServiceFormProps> = ({
           <FormItem>
             <FormLabel>Images</FormLabel>
             <div className="flex items-center gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsMediaDialogOpen(true)}
-              >
+              <Button type="button" variant="outline" onClick={() => setIsMediaDialogOpen(true)}>
                 Manage Images
               </Button>
             </div>
