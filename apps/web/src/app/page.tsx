@@ -1,5 +1,6 @@
 import { FeaturedServices } from '@/app/(public)/_components/featured-services';
 import { HeroSection } from '@/app/(public)/_components/hero-section';
+import { MapSection } from './(public)/_components/map-section';
 
 export default function HomePage() {
   return (
@@ -17,6 +18,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 地图区块 */}
+      <MapSection />
 
       {/* 品牌介绍/愿景区块 */}
       <section className="py-16 md:py-24 bg-gradient-to-b from-white to-pink-50 text-center">
