@@ -21,7 +21,6 @@ export const CheckoutForm = () => {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: `${window.location.origin}/payment-status`,
       },
     });
@@ -36,7 +35,7 @@ export const CheckoutForm = () => {
   };
 
   return (
-    <form onSubmit={() => void handleSubmit} className="w-full">
+    <form onSubmit={handleSubmit} className="w-full">
       <PaymentElement />
       <Button disabled={isLoading || !stripe || !elements} className="w-full mt-4">
         <span>{isLoading ? 'Processing...' : 'Pay Now'}</span>
