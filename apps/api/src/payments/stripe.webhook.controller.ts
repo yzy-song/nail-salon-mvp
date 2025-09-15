@@ -2,11 +2,10 @@ import { Controller, Post, Headers, Req } from '@nestjs/common';
 import { StripeWebhookService } from './stripe.webhook.service';
 import { Stripe } from 'stripe';
 import type { Request } from 'express';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
 
 @ApiTags('Stripe Webhooks')
-@ApiBearerAuth()
 @Controller('webhooks/stripe')
 export class StripeWebhookController {
   constructor(private readonly webhookService: StripeWebhookService) {}
