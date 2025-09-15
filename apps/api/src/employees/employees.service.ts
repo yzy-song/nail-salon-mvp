@@ -78,7 +78,7 @@ export class EmployeesService {
 
     const openingTime = 9; // 9 AM
     const closingTime = 18; // 6 PM
-    const interval = 30; // 30 minutes
+    const interval = 10; // 10 minutes
     const allSlots: Date[] = [];
 
     let currentTime = new Date(startOfDay);

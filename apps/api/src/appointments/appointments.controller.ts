@@ -8,7 +8,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role, type User as UserModel } from '@prisma/client';
 import { User } from 'src/auth/decorators/user.decorator'; // 导入我们自定义的装饰器
 import { Query } from '@nestjs/common';
-import { PaginationDto } from 'src/common/dot/pagination.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
 @ApiTags('Appointment Management')

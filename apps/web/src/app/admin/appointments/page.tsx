@@ -1,32 +1,14 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import api from '@/lib/api';
-import { columns, Appointment } from './_components/columns';
-import { DataTable } from './_components/data-table';
-
-async function getAppointments(): Promise<Appointment[]> {
-  const response = await api.get('/appointments');
-  return response.data.data;
-}
+import { AppointmentCalendar } from './_components/appointment-calendar';
 
 const AppointmentsPage = () => {
-  const {
-    data: appointments,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['admin-appointments'],
-    queryFn: getAppointments,
-  });
-
-  if (isLoading) return <div>Loading appointments...</div>;
-  if (isError) return <div>Failed to load appointments.</div>;
-
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Appointments Management</h1>
-      <DataTable columns={columns} data={appointments || []} />
+      <h1 className="text-3xl font-bold mb-6">Appointments Calendar</h1>
+      <div className="p-4 bg-white rounded-lg shadow-md">
+        <AppointmentCalendar />
+      </div>
     </div>
   );
 };
