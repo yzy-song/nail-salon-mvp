@@ -29,7 +29,7 @@ api.interceptors.response.use(
       useAuthStore.getState().logout();
       return Promise.reject(new Error(errorMessage));
     }
-    console.log('error333:', error.response?.data.message);
+    console.log('error:', error.response?.data.message);
 
     const errorMessage = error.response?.data?.message || 'Please try again.';
     return Promise.reject(new Error(errorMessage));
