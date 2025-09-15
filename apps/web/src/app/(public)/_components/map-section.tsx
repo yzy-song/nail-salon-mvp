@@ -1,51 +1,66 @@
 'use client';
 
 import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
-import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { MapPin, LocateFixed, Navigation } from 'lucide-react';
-
+import { MapPin, LocateFixed, Home, Navigation } from 'lucide-react';
+import { toast } from 'sonner';
 const storePosition = { lat: 53.344356, lng: -6.267543 };
 const storeAddress = '52 Dame Street, Dublin 2, D02 YD29, Ireland';
 
-// 1. Create a new child component for the map's content
-const MapContent = () => {
-  // 2. Use the useMap() hook to get the map instance
+const MapControls = () => {
   const map = useMap();
 
-  // 3. Use useEffect to ensure the ref is set when the map is ready
-  useEffect(() => {
-    if (map) {
-      // You can now interact with the map instance if needed,
-      // though for Marker and default props, it's often not necessary.
-    }
-  }, [map]);
-
-  const handleLocate = () => {
-    if (navigator.geolocation && map) {
-      navigator.geolocation.getCurrentPosition((pos) => {
-        const userPosition = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        map.setCenter(userPosition);
-        map.setZoom(16);
-      });
-    }
+  // This function now re-centers the map on the store's location
+  const handleCenterOnStore = () => {
+    if (!map) return;
+    map.panTo(storePosition);
+    map.setZoom(15);
   };
 
   const handleNavigate = () => {
-    const navigationUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(storeAddress)}`;
+    // Corrected Google Maps navigation URL
+    const navigationUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(storeAddress)}`;
     window.open(navigationUrl, '_blank');
+  };
+
+  const handleLocate = () => {
+    if (!map) return; // 确保地图已加载
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const userPosition = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          // 3. 关键修复：使用 map.panTo() 实现平滑移动
+          map.panTo(userPosition);
+          map.setZoom(16);
+        },
+        () => {
+          // 4. 添加错误处理
+          toast.error('Unable to retrieve your location. Please check your browser permissions.');
+        },
+      );
+    } else {
+      toast.error('Geolocation is not supported by your browser.');
+    }
   };
 
   return (
     <>
       <Marker position={storePosition} />
 
-      {/* Buttons are now inside the component that has access to the map instance */}
       <div className="absolute top-4 right-4 flex flex-col gap-3 z-10">
+        <Button
+          size="icon"
+          onClick={handleCenterOnStore}
+          className="rounded-full shadow-md"
+          aria-label="Center on Salon"
+        >
+          <Home className="h-5 w-5" />
+        </Button>
         <Button size="icon" onClick={handleLocate} className="rounded-full shadow-md" aria-label="Locate Me">
           <LocateFixed className="h-5 w-5" />
         </Button>
-        <Button size="icon" onClick={handleNavigate} className="rounded-full shadow-md" aria-label="Navigate to Shop">
+        <Button size="icon" onClick={handleNavigate} className="rounded-full shadow-md" aria-label="Navigate to Salon">
           <Navigation className="h-5 w-5" />
         </Button>
       </div>
@@ -64,15 +79,13 @@ export const MapSection = () => {
 
           <div className="relative h-[450px] w-full rounded-lg overflow-hidden shadow-lg">
             <Map
-              // 4. The ref prop is removed from here
               defaultCenter={storePosition}
               defaultZoom={15}
               gestureHandling={'greedy'}
               disableDefaultUI={true}
               mapId="nail_salon_map"
             >
-              {/* 5. The content is now rendered as a child component */}
-              <MapContent />
+              <MapControls />
             </Map>
           </div>
         </div>
