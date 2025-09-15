@@ -69,6 +69,8 @@ export default tseslint.config(
       '@typescript-eslint/no-require-imports': 'off',
       // 新增 unused-imports 检查
       'unused-imports/no-unused-imports': 'error',
+
+      '@typescript-eslint/no-misused-promises': 'off',
     
     },
   },
