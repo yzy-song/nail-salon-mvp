@@ -1,4 +1,14 @@
-﻿import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+﻿import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
@@ -59,5 +69,17 @@ export class EmployeesController {
   @ApiCommonResponses()
   findAll() {
     return this.employeesService.findAll();
+  }
+
+  @Get(':id/availability')
+  @ApiOperation({ summary: 'Get employee availability for a specific date' })
+  @ApiResponse({ status: 200, description: 'Return employee availability' })
+  @ApiCommonResponses()
+  getAvailability(
+    @Param('id') id: string,
+    @Query('date') date: string,
+    @Query('serviceId') serviceId: string, // <-- 新增
+  ) {
+    return this.employeesService.getAvailability(id, date, serviceId);
   }
 }

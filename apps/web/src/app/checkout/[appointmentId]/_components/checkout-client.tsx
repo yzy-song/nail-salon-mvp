@@ -16,6 +16,8 @@ const stripePromise = loadStripe(
     'pk_test_51S5l9e6M0xs8zGrRNwKsogzf7oL1LV8mmuvgnHM0I2ZuvMCFwpXX38yYm0ZSzW3pe0HnMsCjRFbbC8JWPuhGM2zC00nJvt0j3j',
 );
 
+console.log('Stripe  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:', process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 export const CheckoutClient = ({ appointmentId }: CheckoutClientProps) => {
   const [clientSecret, setClientSecret] = useState('');
 
@@ -27,6 +29,7 @@ export const CheckoutClient = ({ appointmentId }: CheckoutClientProps) => {
           appointmentId: appointmentId,
         });
         setClientSecret(response.data.data.clientSecret);
+        console.log('Client Secret11111:', response.data.data.clientSecret);
       } catch (error) {
         console.error('Failed to create payment intent', error);
       }

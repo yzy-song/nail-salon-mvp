@@ -1,53 +1,15 @@
-'use client';
-
-import { useBookingStore } from '@/store/booking.store';
-import { SelectService } from './_components/SelectService';
-import { SelectEmployeeAndDate } from './_components/SelectEmployeeAndDate';
-import { Suspense, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { ConfirmationStep } from './_components/ConfirmationStep';
-import { BookingProgress } from './_components/BookingProgress';
-
-const BookingPageContent = () => {
-  const { step, serviceId, setServiceId } = useBookingStore();
-
-  const searchParams = useSearchParams();
-
-  // This effect runs once to check if a serviceId was passed in the URL
-  useEffect(() => {
-    const urlServiceId = searchParams.get('serviceId');
-    if (urlServiceId && !serviceId) {
-      setServiceId(urlServiceId);
-    }
-  }, [searchParams, serviceId, setServiceId]);
-
-  const renderStep = () => {
-    switch (step) {
-      case 1:
-        return <SelectService />;
-      case 2:
-      case 3: // Steps 2 and 3 are combined in one component
-        return <SelectEmployeeAndDate />;
-      case 4:
-        return <ConfirmationStep />;
-      default:
-        return <SelectService />;
-    }
-  };
-
-  return (
-    <div className="container mx-auto py-12">
-      <BookingProgress />
-      {renderStep()}
-    </div>
-  );
-};
+import { Suspense } from 'react';
+import { BookingForm } from './_components/BookingForm';
 
 const BookingPage = () => {
   return (
-    <Suspense fallback={<div className="container mx-auto py-12">Loading...</div>}>
-      <BookingPageContent />
-    </Suspense>
+    <div className="container mx-auto py-12">
+      <h1 className="text-4xl font-bold tracking-tight text-center mb-12">Book Your Appointment</h1>
+      {/* Suspense is needed because BookingForm uses useSearchParams */}
+      <Suspense fallback={<div className="text-center">Loading Booking Form...</div>}>
+        <BookingForm />
+      </Suspense>
+    </div>
   );
 };
 
