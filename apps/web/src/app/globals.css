@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,4 +119,20 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* 让事件更圆润、字体更大 */
+.fc-event {
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 4px 8px;
+}
+/* 标题美化 */
+.fc-toolbar-title {
+  color: #e91e63;
+  font-weight: bold;
+}
+/* 增加时间行高（每小时一行） */
+.fc-timegrid-slot {
+  height: 64px !important; /* 你可以调整为 56px、64px 等更高的值 */
 }

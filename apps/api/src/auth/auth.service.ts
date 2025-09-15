@@ -151,6 +151,7 @@ export class AuthService {
       const decodedToken = await this.firebaseAdmin.auth.verifyIdToken(idToken);
       const { email, name, uid } = decodedToken;
 
+      this.logger.log(`Firebase token 验证成功: uid=${uid}, email=${email}`);
       if (!email) {
         this.logger.warn('Firebase token 缺少 email');
         throw new UnauthorizedException('Firebase token is missing email.');

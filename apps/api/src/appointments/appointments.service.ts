@@ -163,15 +163,9 @@ export class AppointmentsService {
           createdAt: 'desc',
         },
         include: {
-          user: {
-            select: { name: true, email: true },
-          },
-          service: {
-            select: { name: true },
-          },
-          employee: {
-            select: { name: true },
-          },
+          user: { select: { name: true, email: true } },
+          service: { select: { name: true, duration: true } },
+          employee: { select: { name: true } },
         },
       }),
       this.prisma.appointment.count(),

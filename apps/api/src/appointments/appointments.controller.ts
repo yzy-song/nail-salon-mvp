@@ -11,6 +11,7 @@ import { Query } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
+import { RescheduleAppointmentDto } from './dto/reschedule.dto';
 @ApiTags('Appointment Management')
 @ApiBearerAuth() // 表示需要 Bearer Token 认证
 @Controller('appointments')
@@ -73,5 +74,12 @@ export class AppointmentsController {
   // This should be protected by the regular AuthGuard
   findOneByPaymentIntent(@Param('intentId') intentId: string) {
     return this.appointmentsService.findOneByPaymentIntent(intentId);
+  }
+
+  @Patch(':id/reschedule')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  reschedule(@Param('id') id: string, @Body() rescheduleDto: RescheduleAppointmentDto) {
+    return this.appointmentsService.reschedule(id, rescheduleDto);
   }
 }
