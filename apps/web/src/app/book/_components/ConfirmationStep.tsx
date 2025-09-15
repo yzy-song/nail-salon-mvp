@@ -58,8 +58,11 @@ export const ConfirmationStep = () => {
       reset(); // Reset the form
       router.push('/my-appointments'); // Redirect to my appointments page
     } catch (error: any) {
-      toast.error('Booking Failed', {
-        description: error.response?.data?.message || 'Please try again.',
+      // 优先展示后端 message，否则 fallback
+
+      const msg = error?.message || 'Please try again.';
+      toast.error('Booking Failed21111222', {
+        description: msg,
       });
     }
   };

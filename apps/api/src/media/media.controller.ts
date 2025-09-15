@@ -26,7 +26,7 @@ import {
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
 import { DeleteMediaDto } from './dto/delete-media.dto';
 
-@ApiTags('媒体库 (Media)')
+@ApiTags('Media Library')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Roles(Role.ADMIN)

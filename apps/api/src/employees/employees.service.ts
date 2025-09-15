@@ -23,7 +23,7 @@ export class EmployeesService {
       where: { id, deletedAt: null }, // 确保只能找到未被软删除的
     });
     if (!employee) {
-      throw new NotFoundException(`ID为 ${id} 的员工未找到`);
+      throw new NotFoundException(`Employee with ID ${id} not found or has been deleted.`);
     }
     return employee;
   }

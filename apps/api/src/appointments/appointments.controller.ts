@@ -11,7 +11,7 @@ import { Query } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dot/pagination.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
-@ApiTags('预约管理')
+@ApiTags('Appointment Management')
 @ApiBearerAuth() // 表示需要 Bearer Token 认证
 @Controller('appointments')
 @UseGuards(AuthGuard('jwt')) // 整个模块都需要登录
@@ -20,8 +20,8 @@ export class AppointmentsController {
 
   // 顾客创建预约 (任何登录用户都可以)
   @Post()
-  @ApiOperation({ summary: '创建预约' })
-  @ApiResponse({ status: 201, description: '预约创建成功' })
+  @ApiOperation({ summary: 'Create an appointment' })
+  @ApiResponse({ status: 201, description: 'Appointment created successfully' })
   @ApiCommonResponses()
   create(@User() user: UserModel, @Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentsService.create(user.id, createAppointmentDto);
@@ -29,16 +29,16 @@ export class AppointmentsController {
 
   // 顾客获取自己的预约
   @Get('/mine')
-  @ApiOperation({ summary: '获取我的预约' })
-  @ApiResponse({ status: 200, description: '返回用户的预约列表' })
+  @ApiOperation({ summary: 'Get my appointments' })
+  @ApiResponse({ status: 200, description: 'Return user appointment information' })
   @ApiCommonResponses()
   findMyAppointments(@User('id') userId: string) {
     return this.appointmentsService.findMyAppointments(userId);
   }
 
   @Delete('/mine/:id')
-  @ApiOperation({ summary: '取消我的预约' })
-  @ApiResponse({ status: 200, description: '预约取消成功' })
+  @ApiOperation({ summary: 'Cancel my appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment canceled successfully' })
   @ApiCommonResponses()
   cancelMyAppoinment(@User('id') userId: string, @Param('id') appointmentId: string) {
     return this.appointmentsService.cancelMyAppoinment(userId, appointmentId);
@@ -48,8 +48,8 @@ export class AppointmentsController {
 
   // 管理员获取所有预约
   @Get()
-  @ApiOperation({ summary: '获取所有预约' })
-  @ApiResponse({ status: 200, description: '返回所有预约列表' })
+  @ApiOperation({ summary: 'Get all appointments' })
+  @ApiResponse({ status: 200, description: 'Return all appointment information' })
   @ApiCommonResponses()
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
@@ -59,8 +59,8 @@ export class AppointmentsController {
 
   // 管理员更新预约状态
   @Patch(':id/status')
-  @ApiOperation({ summary: '更新预约状态' })
-  @ApiResponse({ status: 200, description: '预约状态更新成功' })
+  @ApiOperation({ summary: 'Update appointment status' })
+  @ApiResponse({ status: 200, description: 'Appointment status updated successfully' })
   @ApiCommonResponses()
   @Roles(Role.ADMIN)
   @UseGuards(RolesGuard)

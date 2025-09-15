@@ -8,15 +8,15 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
-@ApiTags('员工管理')
+@ApiTags('Employees management')
 @ApiBearerAuth() // 表明需要 Bearer Token 认证
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   @Get(':id')
-  @ApiOperation({ summary: '获取单个员工信息' })
-  @ApiResponse({ status: 200, description: '返回员工信息' })
+  @ApiOperation({ summary: 'Get employee information' })
+  @ApiResponse({ status: 200, description: 'Return employee information' })
   @ApiCommonResponses()
   @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
@@ -25,8 +25,8 @@ export class EmployeesController {
 
   // --- 管理员权限 ---
   @Post()
-  @ApiOperation({ summary: '创建员工' })
-  @ApiResponse({ status: 201, description: '员工创建成功' })
+  @ApiOperation({ summary: 'Create employee' })
+  @ApiResponse({ status: 201, description: 'Employee created successfully' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
@@ -34,8 +34,8 @@ export class EmployeesController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: '更新员工信息' })
-  @ApiResponse({ status: 200, description: '员工信息更新成功' })
+  @ApiOperation({ summary: 'Update employee information' })
+  @ApiResponse({ status: 200, description: 'Employee information updated successfully' })
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   update(@Param('id') id: string, @Body() updateEmployeeDto: UpdateEmployeeDto) {
@@ -43,8 +43,8 @@ export class EmployeesController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: '删除员工' })
-  @ApiResponse({ status: 200, description: '员工删除成功' })
+  @ApiOperation({ summary: 'Delete employee' })
+  @ApiResponse({ status: 200, description: 'Employee deleted successfully' })
   @ApiCommonResponses()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
@@ -54,8 +54,8 @@ export class EmployeesController {
 
   // --- 公开接口 ---
   @Get()
-  @ApiOperation({ summary: '获取所有员工信息' })
-  @ApiResponse({ status: 200, description: '返回所有员工信息' })
+  @ApiOperation({ summary: 'Get all employees information' })
+  @ApiResponse({ status: 200, description: 'Return all employees information' })
   @ApiCommonResponses()
   findAll() {
     return this.employeesService.findAll();

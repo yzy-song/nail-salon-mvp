@@ -125,13 +125,15 @@ export const Navbar = () => {
                 >
                   Services
                 </Link>
-                <Link
-                  href="/book"
-                  onClick={() => setOpen(false)}
-                  className="text-gray-600 hover:text-pink-500 transition-colors"
-                >
-                  Book Now
-                </Link>
+                {isLoggedIn && isClient && (
+                  <Link
+                    href="/my-appointments"
+                    onClick={() => setOpen(false)}
+                    className="text-gray-600 hover:text-pink-500 transition-colors"
+                  >
+                    My Appointments
+                  </Link>
+                )}
                 {isClient && user?.role === 'ADMIN' && (
                   <Link
                     href="/admin"
@@ -141,8 +143,8 @@ export const Navbar = () => {
                     Admin Dashboard
                   </Link>
                 )}
-                {/* 如果在admin区，显示分割线和Sidebar菜单 */}
-                {pathname.startsWith('/admin') && (
+                {/* 如果是管理，显示分割线和Sidebar菜单 */}
+                {isClient && user?.role === 'ADMIN' && (
                   <>
                     <hr className="w-2/3 my-4 border-gray-200" />
                     <div className="w-full flex flex-col items-center space-y-4">

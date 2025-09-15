@@ -25,11 +25,14 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // If we get a 401, the token is invalid, so log the user out
+      const errorMessage = 'Your session has expired. Please log in again.';
       useAuthStore.getState().logout();
-      // Optionally, redirect to login page
-      // window.location.href = '/login';
+      return Promise.reject(new Error(errorMessage));
     }
-    return Promise.reject(new Error(error?.message || 'Unknown error'));
+    console.log('error333:', error.response?.data.message);
+
+    const errorMessage = error.response?.data?.message || 'Please try again.';
+    return Promise.reject(new Error(errorMessage));
   },
 );
 

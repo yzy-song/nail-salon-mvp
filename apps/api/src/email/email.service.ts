@@ -13,56 +13,58 @@ export class EmailService {
   }
 
   async sendWelcomeEmail(user: User) {
-    const subject = '欢迎来到我们的美甲沙龙！';
-    const html = `<h3>您好, ${user.name || '新朋友'}!</h3><p>感谢您的注册，期待为您服务。</p>`;
-    // 调用通用方法
+    const subject = 'Welcome to Our Nail Salon!';
+    const html = `<h3>Hello, ${user.name || 'Valued Customer'}!</h3>
+      <p>Thank you for registering with us. We look forward to serving you!</p>`;
     await this.sendEmail(user.email, subject, html);
   }
 
   async sendPasswordResetEmail(email: string, token: string) {
     const resetLink = `${this.configService.get<string>('FRONTEND_URL')}/reset-password?token=${token}`;
-    const subject = '密码重置请求';
-    const html = `<p>您好，</p><p>请点击下面的链接来重置您的密码：</p><p><a href="${resetLink}">${resetLink}</a></p><p>此链接将在15分钟内失效。</p>`;
-    // 调用通用方法
+    const subject = 'Password Reset Request';
+    const html = `<p>Hello,</p>
+      <p>Please click the link below to reset your password:</p>
+      <p><a href="${resetLink}">${resetLink}</a></p>
+      <p>This link will expire in 15 minutes.</p>`;
     await this.sendEmail(email, subject, html);
   }
 
   async sendBookingConfirmationEmail(user: User, appointment: Appointment & { service: Service }) {
-    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy年MM月dd日 HH:mm');
-    const subject = '您已成功预约美甲服务';
+    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy-MM-dd HH:mm');
+    const subject = 'Your Nail Appointment is Confirmed';
     const html = `
-    <h3>Hello, ${user.name || 'My friend'}!</h3>
-    <p>您的美甲预约已成功确认。</p>
-    <p><strong>服务项目:</strong> ${appointment.service.name}</p>
-    <p><strong>服务简介:</strong> ${appointment.service.description}</p>
-    <p><strong>预约时间:</strong> ${appointmentTime}</p>
-    <p>如需变更或取消，请及时联系我们。</p>
-  `;
+      <h3>Hello, ${user.name || 'Valued Customer'}!</h3>
+      <p>Your nail appointment has been successfully confirmed.</p>
+      <p><strong>Service:</strong> ${appointment.service.name}</p>
+      <p><strong>Description:</strong> ${appointment.service.description}</p>
+      <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
+      <p>If you need to reschedule or cancel, please contact us in advance.</p>
+    `;
     await this.sendEmail(user.email, subject, html);
   }
 
   async sendBookingStatusUpdateEmail(user: User, appointment: Appointment & { service: Service }) {
-    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy年MM月dd日 HH:mm');
-    const subject = `您的预约状态已更新为: ${appointment.status}`;
+    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy-MM-dd HH:mm');
+    const subject = `Your Appointment Status Has Been Updated: ${appointment.status}`;
     const html = `
-      <h3>您好, ${user.name || '顾客'}!</h3>
-      <p>您的美甲预约状态已更新。</p>
-      <p><strong>服务项目:</strong> ${appointment.service.name}</p>
-      <p><strong>预约时间:</strong> ${appointmentTime}</p>
-      <p><strong>当前状态:</strong> ${appointment.status}</p>
+      <h3>Hello, ${user.name || 'Valued Customer'}!</h3>
+      <p>The status of your nail appointment has been updated.</p>
+      <p><strong>Service:</strong> ${appointment.service.name}</p>
+      <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
+      <p><strong>Current Status:</strong> ${appointment.status}</p>
     `;
     await this.sendEmail(user.email, subject, html);
   }
 
   async sendBookingReminderEmail(user: User, appointment: Appointment & { service: Service }) {
-    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy年MM月dd日 HH:mm');
-    const subject = '您的美甲预约提醒';
+    const appointmentTime = format(new Date(appointment.appointmentTime), 'yyyy-MM-dd HH:mm');
+    const subject = 'Nail Appointment Reminder';
     const html = `
-      <h3>您好, ${user.name || '顾客'}!</h3>
-      <p>温馨提醒，您有一个美甲预约即将在明天进行。</p>
-      <p><strong>服务项目:</strong> ${appointment.service.name}</p>
-      <p><strong>预约时间:</strong> ${appointmentTime}</p>
-      <p>请准时到店，我们期待您的光临！</p>
+      <h3>Hello, ${user.name || 'Valued Customer'}!</h3>
+      <p>This is a friendly reminder that you have a nail appointment scheduled for tomorrow.</p>
+      <p><strong>Service:</strong> ${appointment.service.name}</p>
+      <p><strong>Appointment Time:</strong> ${appointmentTime}</p>
+      <p>Please arrive on time. We look forward to seeing you!</p>
     `;
     await this.sendEmail(user.email, subject, html);
   }
@@ -80,7 +82,7 @@ export class EmailService {
         html,
       });
     } catch (error) {
-      this.logger.error(`发送邮件失败到 ${to}: ${error.message}`);
+      this.logger.error(`Failed to send email to ${to}: ${error.message}`);
     }
   }
 }

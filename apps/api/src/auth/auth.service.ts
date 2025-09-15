@@ -32,7 +32,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('该邮箱已被注册');
+      throw new ConflictException('Email is already registered');
     }
 
     const saltRounds = 10;
@@ -59,10 +59,10 @@ export class AuthService {
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('邮箱或密码错误');
+      throw new UnauthorizedException('Email or password is incorrect');
     }
 
-    this.logger.log(`用户 ${email} 登录成功`);
+    this.logger.log(`User ${email} signed in successfully`);
     return this._createToken(user);
   }
 
@@ -70,7 +70,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({ where: { email } });
     // 为了安全, 即使用户不存在, 也返回成功信息, 防止被恶意探测用户是否存在
     if (!user) {
-      return { message: '如果邮箱地址有效, 您将会收到一封重置邮件' };
+      return { message: 'You will receive a reset email if the email address is valid.' };
     }
 
     // 1. 生成一个随机的、不存入数据库的原始 token
@@ -96,10 +96,10 @@ export class AuthService {
         where: { email },
         data: { passwordResetToken: null, passwordResetExpires: null },
       });
-      throw new Error('邮件发送失败，请稍后重试');
+      throw new Error('Failed to send email, please try again later');
     }
 
-    return { message: '如果邮箱地址有效, 您将会收到一封重置邮件' };
+    return { message: 'You will receive a reset email if the email address is valid.' };
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
@@ -119,7 +119,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('密码重置Token无效或已过期');
+      throw new UnauthorizedException('Password reset token is invalid or has expired');
     }
 
     // 3. 更新密码并清空重置 token
@@ -135,7 +135,7 @@ export class AuthService {
       },
     });
 
-    return { message: '密码重置成功' };
+    return { message: 'Password reset successfully' };
   }
 
   async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {

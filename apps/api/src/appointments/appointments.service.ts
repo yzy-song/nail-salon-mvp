@@ -67,7 +67,9 @@ export class AppointmentsService {
     });
 
     if (conflictingAppointment) {
-      throw new ConflictException(`该员工在此时间段内已有预约，请选择其他时间`);
+      throw new ConflictException(
+        'The employee already has an appointment at this time, please choose another time.',
+      );
     }
 
     // 发送预约成功邮件
@@ -99,12 +101,12 @@ export class AppointmentsService {
     });
 
     if (!appointment) {
-      throw new NotFoundException(`ID为 ${appointmentId} 的预约未找到`);
+      throw new NotFoundException(`Appointment with ID ${appointmentId} not found`);
     }
 
     // 关键：校验是否是本人操作
     if (appointment.userId !== userId) {
-      throw new ForbiddenException('您没有权限取消此预约');
+      throw new ForbiddenException('You do not have permission to cancel this appointment');
     }
 
     const cancelledAppointment = await this.prisma.appointment.update({
@@ -168,7 +170,7 @@ export class AppointmentsService {
       },
     });
     if (!appointment) {
-      throw new NotFoundException(`ID为 ${id} 的预约未找到`);
+      throw new NotFoundException(`Appointment with ID ${id} not found`);
     }
     const updatedAppointment = await this.prisma.appointment.update({
       where: { id },

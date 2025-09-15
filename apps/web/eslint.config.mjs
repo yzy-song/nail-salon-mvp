@@ -50,7 +50,7 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }],
-
+      '@typescript-eslint/prefer-promise-reject-errors': 'off',
       // 优化的规则
       '@typescript-eslint/no-explicit-any': 'warn',
 

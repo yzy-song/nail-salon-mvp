@@ -46,16 +46,16 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  @ApiOperation({ summary: '忘记密码' })
-  @ApiResponse({ status: 200, description: '忘记密码邮件已发送' })
+  @ApiOperation({ summary: 'Forgot password' })
+  @ApiResponse({ status: 200, description: 'Forgot password email sent' })
   @ApiCommonResponses()
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto.email);
   }
 
   @Post('reset-password')
-  @ApiOperation({ summary: '重置密码' })
-  @ApiResponse({ status: 200, description: '密码重置成功' })
+  @ApiOperation({ summary: 'Reset password' })
+  @ApiResponse({ status: 200, description: 'Password reset successfully' })
   @ApiCommonResponses()
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
@@ -63,8 +63,8 @@ export class AuthController {
 
   @Patch('profile')
   @ApiBearerAuth()
-  @ApiOperation({ summary: '更新当前用户信息' })
-  @ApiResponse({ status: 200, description: '成功更新用户信息' })
+  @ApiOperation({ summary: 'Update current user information' })
+  @ApiResponse({ status: 200, description: 'User information updated successfully' })
   @ApiCommonResponses()
   @UseGuards(AuthGuard('jwt'))
   updateProfile(
