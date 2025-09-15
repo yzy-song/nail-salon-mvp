@@ -29,10 +29,10 @@ export class AppointmentsService {
     ]);
 
     if (!service) {
-      throw new NotFoundException(`ID为 ${serviceId} 的服务未找到`);
+      throw new NotFoundException(`Appointment with ID ${serviceId} not found.`);
     }
     if (!employee) {
-      throw new NotFoundException(`ID为 ${employeeId} 的员工未找到`);
+      throw new NotFoundException(`Employee with ID ${employeeId} not found.`);
     }
 
     // 3. 计算预约的开始和结束时间

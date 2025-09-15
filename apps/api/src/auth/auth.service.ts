@@ -13,7 +13,8 @@ import { FirebaseAdminService } from 'src/firebase/firebase-admin.service';
 
 @Injectable()
 export class AuthService {
-  // 通过依赖注入，引入 PrismaService
+  private readonly logger = new Logger(AuthService.name); // 新增
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
@@ -21,17 +22,16 @@ export class AuthService {
     private firebaseAdmin: FirebaseAdminService,
   ) {}
 
-  private readonly logger = new Logger(AuthService.name);
-
-  // 修改 register 方法
   async register(createUserDto: CreateUserDto) {
     const { email, password, name } = createUserDto;
+    this.logger.log(`注册请求: email=${email}, name=${name}`);
 
     const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
 
     if (existingUser) {
+      this.logger.warn(`注册失败，邮箱已存在: email=${email}`);
       throw new ConflictException('Email is already registered');
     }
 
@@ -46,40 +46,37 @@ export class AuthService {
       },
     });
 
-    // 不再返回用户信息，而是直接调用 _createToken 方法返回 token
+    this.logger.log(`注册成功: userId=${newUser.id}, email=${email}`);
     return this._createToken(newUser);
   }
 
   async login(loginUserDto: any) {
     const { email, password } = loginUserDto;
+    this.logger.log(`登录请求: email=${email}`);
 
-    // 1. 查找用户
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
+      this.logger.warn(`登录失败: email=${email}`);
       throw new UnauthorizedException('Email or password is incorrect');
     }
 
-    this.logger.log(`User ${email} signed in successfully`);
+    this.logger.log(`登录成功: userId=${user.id}, email=${email}`);
     return this._createToken(user);
   }
 
   async forgotPassword(email: string): Promise<{ message: string }> {
+    this.logger.log(`忘记密码请求: email=${email}`);
     const user = await this.prisma.user.findUnique({ where: { email } });
-    // 为了安全, 即使用户不存在, 也返回成功信息, 防止被恶意探测用户是否存在
     if (!user) {
+      this.logger.warn(`忘记密码，用户不存在: email=${email}`);
       return { message: 'You will receive a reset email if the email address is valid.' };
     }
 
-    // 1. 生成一个随机的、不存入数据库的原始 token
     const resetToken = randomBytes(32).toString('hex');
-
-    // 2. 将原始 token 哈希后存入数据库
     const passwordResetToken = createHash('sha256').update(resetToken).digest('hex');
-
-    // 3. 设置过期时间 (例如15分钟后)
     const passwordResetExpires = addMinutes(new Date(), 15);
 
     await this.prisma.user.update({
@@ -87,15 +84,15 @@ export class AuthService {
       data: { passwordResetToken, passwordResetExpires },
     });
 
-    // 4. 发送包含原始 token 的邮件
     try {
       await this.emailService.sendPasswordResetEmail(email, resetToken);
+      this.logger.log(`重置密码邮件发送成功: email=${email}`);
     } catch (error) {
-      // 如果邮件发送失败, 清空重置 token, 避免产生无法使用的 token
       await this.prisma.user.update({
         where: { email },
         data: { passwordResetToken: null, passwordResetExpires: null },
       });
+      this.logger.error(`重置密码邮件发送失败: email=${email}`, error.stack);
       throw new Error('Failed to send email, please try again later');
     }
 
@@ -104,25 +101,23 @@ export class AuthService {
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
     const { token, password } = resetPasswordDto;
+    this.logger.log(`重置密码请求`);
 
-    // 1. 将收到的 token 哈希，以便和数据库中的进行比较
     const hashedToken = createHash('sha256').update(token).digest('hex');
-
-    // 2. 查找用户，并检查 token 是否过期
     const user = await this.prisma.user.findFirst({
       where: {
         passwordResetToken: hashedToken,
         passwordResetExpires: {
-          gte: new Date(), // 检查过期时间是否大于等于当前时间
+          gte: new Date(),
         },
       },
     });
 
     if (!user) {
+      this.logger.warn('重置密码失败，token无效或已过期');
       throw new UnauthorizedException('Password reset token is invalid or has expired');
     }
 
-    // 3. 更新密码并清空重置 token
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -135,35 +130,35 @@ export class AuthService {
       },
     });
 
+    this.logger.log(`密码重置成功: userId=${user.id}`);
     return { message: 'Password reset successfully' };
   }
 
   async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {
+    this.logger.log(`更新用户信息: userId=${userId}`);
     const updatedUser = await this.prisma.user.update({
       where: { id: userId },
       data: updateProfileDto,
     });
 
-    // 同样，移除密码并返回
     const { password, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
   }
 
   async firebaseLogin(idToken: string) {
+    this.logger.log('Firebase 登录请求');
     try {
       const decodedToken = await this.firebaseAdmin.auth.verifyIdToken(idToken);
       const { email, name, uid } = decodedToken;
 
       if (!email) {
+        this.logger.warn('Firebase token 缺少 email');
         throw new UnauthorizedException('Firebase token is missing email.');
       }
 
       let user = await this.prisma.user.findUnique({ where: { email } });
 
       if (!user) {
-        // If user doesn't exist, create a new one.
-        // Note: We generate a random password as it's required by our schema,
-        // but the user will never use it.
         const randomPassword = randomBytes(16).toString('hex');
         const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
@@ -171,20 +166,22 @@ export class AuthService {
           data: {
             email,
             name: name || 'Firebase User',
-            password: hashedPassword, // Required field
+            password: hashedPassword,
           },
         });
+        this.logger.log(`Firebase 新用户注册: email=${email}`);
       }
 
-      // Return our system's JWT
+      this.logger.log(`Firebase 登录成功: userId=${user.id}, email=${email}`);
       return this._createToken(user);
     } catch (error) {
+      this.logger.error('Firebase 登录失败', error.stack);
       throw new UnauthorizedException('Invalid Firebase token.');
     }
   }
 
-  // 类的内部私有方法,只能在类的其他方法中调用
   private async _createToken(user: { id: string; email: string; role: string }) {
+    this.logger.log(`生成 JWT token: userId=${user.id}, email=${user.email}`);
     const payload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = await this.jwtService.signAsync(payload);
     return {
