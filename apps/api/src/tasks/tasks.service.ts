@@ -60,7 +60,7 @@ export class TasksService {
     this.logger.log('每日预约提醒任务执行完毕。');
   }
 
-  @Cron('*/1 * * * *') // 每5分钟执行一次
+  @Cron('*/5 * * * *') // 每5分钟执行一次
   async handleEmailSync() {
     this.logger.log('Running scheduled email sync...');
     await this.emailSyncService.syncEmails();
