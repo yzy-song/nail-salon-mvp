@@ -29,7 +29,6 @@ export const CheckoutClient = ({ appointmentId }: CheckoutClientProps) => {
           appointmentId: appointmentId,
         });
         setClientSecret(response.data.data.clientSecret);
-        console.log('Client Secret11111:', response.data.data.clientSecret);
       } catch (error) {
         console.error('Failed to create payment intent', error);
       }

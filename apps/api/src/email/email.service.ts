@@ -85,4 +85,17 @@ export class EmailService {
       this.logger.error(`Failed to send email to ${to}: ${error.message}`);
     }
   }
+
+  async sendNewAccountInfoEmail(email: string, name: string, temporaryPassword: string) {
+    const subject = 'Your New Account at NailSalon';
+    const html = `
+        <h3>Welcome, ${name}!</h3>
+        <p>An account has been created for you to manage your bookings.</p>
+        <p>You can log in using the following credentials:</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Temporary Password:</strong> ${temporaryPassword}</p>
+        <p>We recommend you log in and change your password at your earliest convenience.</p>
+      `;
+    await this.sendEmail(email, subject, html);
+  }
 }

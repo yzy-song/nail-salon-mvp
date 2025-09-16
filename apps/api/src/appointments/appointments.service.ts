@@ -10,7 +10,9 @@ import { EmailService } from 'src/email/email.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { paginate } from 'src/common/utils/pagination.util';
 import { AssignEmployeeDto } from './dto/assign-employee.dto';
-
+import { CreateGuestAppointmentDto } from './dto/create-guest-appointment.dto';
+import { randomBytes } from 'crypto';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AppointmentsService {
   constructor(
@@ -243,5 +245,41 @@ export class AppointmentsService {
       throw new NotFoundException(`Appointment with paymentIntentId ${paymentIntentId} not found`);
     }
     return appointment;
+  }
+
+  async createGuestAppointment(dto: CreateGuestAppointmentDto) {
+    const { customerEmail, customerName, ...appointmentData } = dto;
+
+    // 1. Check if user already exists
+    let user = await this.prisma.user.findUnique({
+      where: { email: customerEmail },
+    });
+
+    // 2. If user does not exist, create a new one
+    if (!user) {
+      const temporaryPassword = randomBytes(8).toString('hex');
+      const hashedPassword = await bcrypt.hash(temporaryPassword, 10);
+
+      user = await this.prisma.user.create({
+        data: {
+          email: customerEmail,
+          name: customerName,
+          password: hashedPassword,
+        },
+      });
+
+      // Send the welcome email with the temporary password
+      await this.emailService.sendNewAccountInfoEmail(
+        customerEmail,
+        customerName,
+        temporaryPassword,
+      );
+    }
+
+    // 3. Now, call the original `create` method with the user's ID
+    return this.create(user.id, {
+      ...appointmentData,
+      appointmentTime: new Date(appointmentData.appointmentTime),
+    });
   }
 }

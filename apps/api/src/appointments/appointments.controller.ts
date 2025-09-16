@@ -13,15 +13,26 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
 import { RescheduleAppointmentDto } from './dto/reschedule.dto';
 import { AssignEmployeeDto } from './dto/assign-employee.dto';
+import { CreateGuestAppointmentDto } from './dto/create-guest-appointment.dto';
+
 @ApiTags('Appointment Management')
-@ApiBearerAuth() // 表示需要 Bearer Token 认证
 @Controller('appointments')
-@UseGuards(AuthGuard('jwt')) // 整个模块都需要登录
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
-  // 顾客创建预约 (任何登录用户都可以)
+  // 游客预约，不需要登录
+  @Post('guest')
+  @ApiOperation({ summary: 'Create a new appointment as a guest' })
+  @ApiResponse({ status: 201, description: 'Guest appointment created successfully' })
+  @ApiCommonResponses()
+  createGuestAppointment(@Body() createGuestAppointmentDto: CreateGuestAppointmentDto) {
+    return this.appointmentsService.createGuestAppointment(createGuestAppointmentDto);
+  }
+
+  // 登录用户预约
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create an appointment' })
   @ApiResponse({ status: 201, description: 'Appointment created successfully' })
   @ApiCommonResponses()
@@ -29,8 +40,10 @@ export class AppointmentsController {
     return this.appointmentsService.create(user.id, createAppointmentDto);
   }
 
-  // 顾客获取自己的预约
+  // 用户获取自己的预约
   @Get('/mine')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get my appointments' })
   @ApiResponse({ status: 200, description: 'Return user appointment information' })
   @ApiCommonResponses()
@@ -38,7 +51,10 @@ export class AppointmentsController {
     return this.appointmentsService.findMyAppointments(userId);
   }
 
+  // 用户取消自己的预约
   @Delete('/mine/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Cancel my appointment' })
   @ApiResponse({ status: 200, description: 'Appointment canceled successfully' })
   @ApiCommonResponses()
@@ -47,55 +63,62 @@ export class AppointmentsController {
   }
 
   // --- 以下仅限管理员 ---
-
   // 管理员获取所有预约
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get all appointments' })
   @ApiResponse({ status: 200, description: 'Return all appointment information' })
   @ApiCommonResponses()
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.appointmentsService.findAll(paginationDto);
   }
 
   // 管理员更新预约状态
   @Patch(':id/status')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update appointment status' })
   @ApiResponse({ status: 200, description: 'Appointment status updated successfully' })
   @ApiCommonResponses()
-  @Roles(Role.ADMIN)
-  @UseGuards(RolesGuard)
   updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateAppointmentStatusDto) {
     return this.appointmentsService.updateStatus(id, updateStatusDto);
   }
 
-  // This endpoint is for the frontend to verify the payment status
+  // 管理员根据支付 intent 查询预约
   @Get('by-intent/:intentId')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get appointment by payment intent ID' })
   @ApiResponse({ status: 200, description: 'Return appointment information by payment intent ID' })
   @ApiCommonResponses()
-  @UseGuards(AuthGuard('jwt'))
   findOneByPaymentIntent(@Param('intentId') intentId: string) {
     return this.appointmentsService.findOneByPaymentIntent(intentId);
   }
 
+  // 管理员重新安排预约
   @Patch(':id/reschedule')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Reschedule an appointment' })
   @ApiResponse({ status: 200, description: 'Appointment rescheduled successfully' })
   @ApiCommonResponses()
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
   reschedule(@Param('id') id: string, @Body() rescheduleDto: RescheduleAppointmentDto) {
     return this.appointmentsService.reschedule(id, rescheduleDto);
   }
 
+  // 管理员分配员工
   @Patch(':id/assign-employee')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Assign an employee to an appointment' })
   @ApiResponse({ status: 200, description: 'Employee assigned successfully' })
   @ApiCommonResponses()
-  @UseGuards(RolesGuard)
-  @Roles(Role.ADMIN)
   assignEmployee(@Param('id') id: string, @Body() assignEmployeeDto: AssignEmployeeDto) {
     return this.appointmentsService.assignEmployee(id, assignEmployeeDto);
   }

@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { format, formatISO, startOfDay } from 'date-fns';
 import { Loader2 } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { GuestInfoDialog } from './GuestInfoDialog';
 
 // 分时段分组函数
 const groupTimesByPeriod = (times: string[]) => {
@@ -52,6 +53,7 @@ export const BookingForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isLoggedIn } = useAuthStore();
+  const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
 
   const [selectedServiceId, setSelectedServiceId] = useState<string | undefined>(
     searchParams.get('serviceId') || undefined,
@@ -126,17 +128,44 @@ export const BookingForm = () => {
     },
   });
 
+  const { mutate: createGuestAppointment, isPending: isGuestBookingPending } = useMutation({
+    mutationFn: (values: any) => api.post('/appointments/guest', values),
+    onSuccess: () => {
+      toast.success('Booking Successful!', {
+        description: "We've sent an email with your new account details.",
+      });
+      router.push('/login'); // Redirect to login after guest booking
+    },
+    onError: (error: any) => {
+      toast.error('Booking Failed', { description: error.response?.data?.message });
+    },
+  });
+
   const handleBooking = () => {
-    if (!isLoggedIn) {
-      toast.error('Please log in to complete your booking.');
-      router.push('/login');
-      return;
-    }
     if (!selectedServiceId || !selectedEmployeeId || !selectedDate || !selectedTime) {
-      toast.error('Please select a service, employee, date, and time.');
+      toast.error('Please complete your selection.');
       return;
     }
-    createAppointment();
+
+    if (isLoggedIn) {
+      createAppointment();
+    } else {
+      // If user is a guest, open the dialog to ask for name/email
+      setIsGuestDialogOpen(true);
+    }
+  };
+
+  const handleGuestSubmit = (guestData: { customerName: string; customerEmail: string }) => {
+    const [hours, minutes] = selectedTime!.split(':');
+    const appointmentTime = new Date(selectedDate!);
+    appointmentTime.setHours(parseInt(hours), parseInt(minutes));
+
+    createGuestAppointment({
+      serviceId: selectedServiceId,
+      employeeId: selectedEmployeeId,
+      appointmentTime: appointmentTime.toISOString(),
+      ...guestData,
+    });
   };
 
   return (
@@ -294,6 +323,12 @@ export const BookingForm = () => {
           </Card>
         </aside>
       </main>
+      <GuestInfoDialog
+        isOpen={isGuestDialogOpen}
+        onClose={() => setIsGuestDialogOpen(false)}
+        onConfirm={handleGuestSubmit}
+        isPending={isGuestBookingPending}
+      />
     </div>
   );
 };
