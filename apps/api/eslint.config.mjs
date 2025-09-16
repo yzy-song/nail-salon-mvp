@@ -48,7 +48,8 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/no-base-to-string': 'off', // 关闭对 [object Object] 的检查
 
-       '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/await-thenable': 'warn',
 }
   },
 );

@@ -17,6 +17,7 @@ import { MediaModule } from './media/media.module';
 import { FirebaseModule } from './firebase/firebase.module';
 import { PaymentsModule } from './payments/payments.module';
 import { AppLogger } from './common/utils/logger';
+import { EmailSyncModule } from './email-sync/email-sync.module';
 @Module({
   imports: [
     // 设置.env配置文件为全局可用
@@ -37,6 +38,7 @@ import { AppLogger } from './common/utils/logger';
     MediaModule,
     FirebaseModule,
     PaymentsModule,
+    EmailSyncModule,
   ],
   controllers: [AppController], // NestJS 默认创建的 Controller
   providers: [AppService, AppLogger], // NestJS 默认创建的 Service

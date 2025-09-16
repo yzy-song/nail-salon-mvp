@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { addHours, startOfTomorrow, endOfTomorrow } from 'date-fns';
 import { EmailService } from 'src/email/email.service';
 import { AppointmentStatus } from '@prisma/client';
+import { EmailSyncService } from 'src/email-sync/email-sync.service';
 
 @Injectable()
 export class TasksService {
@@ -12,6 +13,7 @@ export class TasksService {
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
+    private emailSyncService: EmailSyncService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_9AM) // 每天上午9点执行
@@ -56,5 +58,11 @@ export class TasksService {
     }
 
     this.logger.log('每日预约提醒任务执行完毕。');
+  }
+
+  @Cron('*/1 * * * *') // 每5分钟执行一次
+  async handleEmailSync() {
+    this.logger.log('Running scheduled email sync...');
+    await this.emailSyncService.syncEmails();
   }
 }
