@@ -12,6 +12,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiCommonResponses } from 'src/common/decorators/api-common-responses.decorator';
 import { RescheduleAppointmentDto } from './dto/reschedule.dto';
+import { AssignEmployeeDto } from './dto/assign-employee.dto';
 @ApiTags('Appointment Management')
 @ApiBearerAuth() // 表示需要 Bearer Token 认证
 @Controller('appointments')
@@ -71,15 +72,31 @@ export class AppointmentsController {
 
   // This endpoint is for the frontend to verify the payment status
   @Get('by-intent/:intentId')
-  // This should be protected by the regular AuthGuard
+  @ApiOperation({ summary: 'Get appointment by payment intent ID' })
+  @ApiResponse({ status: 200, description: 'Return appointment information by payment intent ID' })
+  @ApiCommonResponses()
+  @UseGuards(AuthGuard('jwt'))
   findOneByPaymentIntent(@Param('intentId') intentId: string) {
     return this.appointmentsService.findOneByPaymentIntent(intentId);
   }
 
   @Patch(':id/reschedule')
+  @ApiOperation({ summary: 'Reschedule an appointment' })
+  @ApiResponse({ status: 200, description: 'Appointment rescheduled successfully' })
+  @ApiCommonResponses()
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   reschedule(@Param('id') id: string, @Body() rescheduleDto: RescheduleAppointmentDto) {
     return this.appointmentsService.reschedule(id, rescheduleDto);
+  }
+
+  @Patch(':id/assign-employee')
+  @ApiOperation({ summary: 'Assign an employee to an appointment' })
+  @ApiResponse({ status: 200, description: 'Employee assigned successfully' })
+  @ApiCommonResponses()
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  assignEmployee(@Param('id') id: string, @Body() assignEmployeeDto: AssignEmployeeDto) {
+    return this.appointmentsService.assignEmployee(id, assignEmployeeDto);
   }
 }

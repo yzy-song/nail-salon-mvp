@@ -7,9 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth.store';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
-import { navItems as adminNavItems } from '@/components/shared/Sidebar';
-// 导入 Sidebar 中定义的 navItems
-
+import { adminNavItems } from '@/lib/nav-config';
 export const Navbar = () => {
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
@@ -113,7 +111,7 @@ export const Navbar = () => {
             </SheetTrigger>
             <SheetContent className="inset-0 w-full h-full max-w-full p-0 bg-white flex flex-col items-center justify-center transition-all duration-300">
               <SheetHeader>
-                <SheetTitle className="text-pink-500">NailSalon</SheetTitle>
+                <SheetTitle className="text-2xl font-bold text-pink-500">NailSalon</SheetTitle>
               </SheetHeader>
               {/* 判断是否在 /admin 区，显示不同菜单 */}
               <div className="flex flex-col items-center justify-center h-full space-y-6 text-lg w-full">

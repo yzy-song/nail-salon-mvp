@@ -9,6 +9,7 @@ import { RescheduleAppointmentDto } from './dto/reschedule.dto';
 import { EmailService } from 'src/email/email.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { paginate } from 'src/common/utils/pagination.util';
+import { AssignEmployeeDto } from './dto/assign-employee.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -116,6 +117,30 @@ export class AppointmentsService {
     if (conflictingAppointment) {
       throw new ConflictException(`This time slot is unavailable for the selected employee.`);
     }
+  }
+
+  async assignEmployee(appointmentId: string, assignEmployeeDto: AssignEmployeeDto) {
+    const { employeeId } = assignEmployeeDto;
+
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found.');
+    }
+
+    // We re-run our conflict check for the NEW employee at the same time
+    await this._checkAppointmentConflict(
+      employeeId, // new employee
+      appointment.serviceId,
+      appointment.appointmentTime,
+    );
+
+    return this.prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { employeeId: employeeId },
+    });
   }
 
   // ====================================================================

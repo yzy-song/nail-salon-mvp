@@ -72,8 +72,8 @@ export const MediaLibraryDialog: React.FC<MediaLibraryDialogProps> = ({
                       <Image
                         src={image.url}
                         alt={image.altText || ''}
-                        width={150}
-                        height={150}
+                        width={250}
+                        height={250}
                         className="aspect-square object-cover w-full rounded-md"
                       />
                       {isSelected && (
