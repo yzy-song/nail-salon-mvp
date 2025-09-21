@@ -1,7 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as Imap from 'node-imap';
-import { simpleParser } from 'mailparser';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppointmentsService } from 'src/appointments/appointments.service';
 import { User } from '@prisma/client';
@@ -12,7 +10,6 @@ export class EmailSyncService {
   private gmail = google.gmail('v1');
   private oAuth2Client;
 
-  private imap: Imap;
   private readonly TREATWELL_BOOKING_EMAIL = '';
   constructor(
     private configService: ConfigService,
@@ -36,11 +33,11 @@ export class EmailSyncService {
     try {
       const gmailAccount = this.configService.get('GMAIL_USER_EMAIL');
 
-      // 1. Search for unread emails from specific senders
+      // 1. Search for read/unread emails from specific senders
       const res = await this.gmail.users.messages.list({
         auth: this.oAuth2Client,
         userId: gmailAccount,
-        q: 'is:unread from:treatwell.es', // Example query
+        q: `is:read from:${this.TREATWELL_BOOKING_EMAIL}`,
       });
 
       const messages = res.data.messages;
