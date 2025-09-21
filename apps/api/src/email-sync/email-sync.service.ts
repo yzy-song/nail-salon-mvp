@@ -5,10 +5,13 @@ import { simpleParser } from 'mailparser';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppointmentsService } from 'src/appointments/appointments.service';
 import { User } from '@prisma/client';
-
+import { google } from 'googleapis';
 @Injectable()
 export class EmailSyncService {
   private readonly logger = new Logger(EmailSyncService.name);
+  private gmail = google.gmail('v1');
+  private oAuth2Client;
+
   private imap: Imap;
   private readonly TREATWELL_BOOKING_EMAIL = '';
   constructor(
@@ -16,87 +19,89 @@ export class EmailSyncService {
     private prisma: PrismaService,
     private appointmentsService: AppointmentsService,
   ) {
-    this.imap = new Imap({
-      user: this.configService.get('IMAP_USER'),
-      password: this.configService.get('IMAP_PASSWORD'),
-      host: this.configService.get('IMAP_HOST'),
-      port: this.configService.get('IMAP_PORT'),
-      tls: this.configService.get('IMAP_TLS') === 'true',
-      tlsOptions: { rejectUnauthorized: false }, // For Gmail
+    this.oAuth2Client = new google.auth.OAuth2(
+      this.configService.get('GOOGLE_CLIENT_ID'),
+      this.configService.get('GOOGLE_CLIENT_SECRET'),
+      'https://developers.google.com/oauthplayground', // Redirect URI
+    );
+
+    this.oAuth2Client.setCredentials({
+      refresh_token: this.configService.get('GOOGLE_REFRESH_TOKEN'),
     });
     this.TREATWELL_BOOKING_EMAIL = this.configService.get('TREATWELL_BOOKING_EMAIL');
   }
 
   async syncEmails() {
-    this.logger.log('Starting email sync...');
-    return new Promise<void>((resolve, reject) => {
-      this.imap.once('ready', () => {
-        this.imap.openBox('INBOX', false, (err, box) => {
-          if (err) {
-            this.logger.error('Error opening inbox', err);
-            this.imap.end();
-            return reject(new Error(err instanceof Error ? err.message : String(err)));
-          }
+    this.logger.log('Starting email sync via Gmail API...');
+    try {
+      const gmailAccount = this.configService.get('GMAIL_USER_EMAIL');
 
-          // Search for unread emails from Treatwell
-          this.imap.search([['FROM', this.TREATWELL_BOOKING_EMAIL], ['SEEN']], (err, results) => {
-            if (err) {
-              this.logger.error('Email search error', err);
-              this.imap.end();
-              return reject(new Error(err instanceof Error ? err.message : String(err)));
-            }
-            if (!results || results.length === 0) {
-              this.logger.log('No new emails from specified senders to sync.');
-              this.imap.end();
-              return resolve();
-            }
+      // 1. Search for unread emails from specific senders
+      const res = await this.gmail.users.messages.list({
+        auth: this.oAuth2Client,
+        userId: gmailAccount,
+        q: 'is:unread from:treatwell.es', // Example query
+      });
 
-            const f = this.imap.fetch(results, { bodies: '', markSeen: true });
-            f.on('message', (msg) => {
-              msg.on('body', (stream) => {
-                simpleParser(stream, async (err, mail) => {
-                  if (err) {
-                    this.logger.error('Error parsing email', err);
-                    return;
-                  }
-                  const parsedData = this.parseEmailBody(mail.text || '');
-                  if (parsedData) {
-                    await this.createAppointmentFromEmail(parsedData);
-                  } else {
-                    this.logger.warn('Could not parse appointment data from email.');
-                  }
-                });
-              });
-            });
-            f.once('error', (err) => {
-              this.logger.error('Fetch error: ' + err);
-              this.imap.end();
-              reject(new Error(err instanceof Error ? err.message : String(err)));
-            });
-            f.once('end', () => {
-              this.logger.log('Done fetching all messages!');
-              this.imap.end();
-            });
-          });
+      const messages = res.data.messages;
+      if (!messages || messages.length === 0) {
+        this.logger.log('No new emails to sync.');
+        return;
+      }
+
+      this.logger.log(`Found ${messages.length} new emails.`);
+
+      // 2. Process each email
+      for (const message of messages) {
+        const email = await this.gmail.users.messages.get({
+          auth: this.oAuth2Client,
+          userId: gmailAccount,
+          id: message.id,
         });
-      });
 
-      this.imap.once('error', (err) => {
-        this.logger.error('IMAP connection error', err);
-        reject(new Error(err instanceof Error ? err.message : String(err)));
-      });
+        const body = this.findEmailBody(email.data.payload);
+        if (body) {
+          const decodedBody = Buffer.from(body, 'base64').toString('utf-8');
+          const parsedData = this.parseEmailBody(decodedBody);
 
-      this.imap.once('end', () => {
-        this.logger.log('IMAP connection ended.');
-        resolve();
-      });
+          if (parsedData) {
+            await this.createAppointmentFromEmail(parsedData);
+          } else {
+            this.logger.warn(`Could not parse email with ID: ${message.id}`);
+          }
+        }
 
-      this.imap.connect();
-    });
+        // 3. Mark email as read
+        await this.gmail.users.messages.modify({
+          auth: this.oAuth2Client,
+          userId: gmailAccount,
+          id: message.id,
+          requestBody: {
+            removeLabelIds: ['UNREAD'],
+          },
+        });
+      }
+      this.logger.log('Email sync finished.');
+    } catch (error) {
+      this.logger.error('Failed to sync emails:', error);
+    }
   }
 
-  // in email-sync.service.ts
-
+  private findEmailBody(payload: any): string | null {
+    if (payload.body?.data) {
+      return payload.body.data;
+    }
+    if (payload.parts) {
+      for (const part of payload.parts) {
+        if (part.mimeType === 'text/plain') {
+          return part.body?.data || null;
+        }
+        const nestedBody = this.findEmailBody(part);
+        if (nestedBody) return nestedBody;
+      }
+    }
+    return null;
+  }
   private parseEmailBody(body: string) {
     this.logger.log('Attempting to parse email body with new regex...');
 
