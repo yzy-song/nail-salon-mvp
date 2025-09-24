@@ -94,7 +94,11 @@ export class AppointmentsController {
   @ApiOperation({ summary: 'Get appointment by payment intent ID' })
   @ApiResponse({ status: 200, description: 'Return appointment information by payment intent ID' })
   @ApiCommonResponses()
-  findOneByPaymentIntent(@Param('intentId') intentId: string, userId?: string, userRole?: string) {
+  findOneByPaymentIntent(
+    @Param('intentId') intentId: string,
+    @Query('userId') userId: string,
+    @Query('userRole') userRole: string,
+  ) {
     return this.appointmentsService.findOneByPaymentIntent(intentId, userId, userRole);
   }
 
