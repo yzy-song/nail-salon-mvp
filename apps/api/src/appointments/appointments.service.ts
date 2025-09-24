@@ -215,12 +215,7 @@ export class AppointmentsService {
   }
 
   // 管理员更新预约状态
-  async updateStatus(
-    id: string,
-    updateDto: UpdateAppointmentStatusDto,
-    userId?: string,
-    userRole?: string,
-  ) {
+  async updateStatus(id: string, updateDto: UpdateAppointmentStatusDto) {
     const appointment = await this.prisma.appointment.findUnique({
       where: { id },
       include: {
@@ -229,12 +224,6 @@ export class AppointmentsService {
     });
     if (!appointment) {
       throw new NotFoundException(`Appointment with ID ${id} not found`);
-    }
-    // 权限检查，管理员可以改所有的预约状态，普通用户只能改自己的预约状态
-    if (userRole !== Role.ADMIN) {
-      if (appointment.userId !== userId) {
-        throw new ForbiddenException('You do not have permission to update this appointment');
-      }
     }
     const updatedAppointment = await this.prisma.appointment.update({
       where: { id },
@@ -246,7 +235,7 @@ export class AppointmentsService {
     return updatedAppointment;
   }
 
-  async findOneByPaymentIntent(paymentIntentId: string) {
+  async findOneByPaymentIntent(paymentIntentId: string, userId?: string, userRole?: string) {
     const appointment = await this.prisma.appointment.findUnique({
       where: { paymentIntentId },
       include: {
@@ -255,6 +244,11 @@ export class AppointmentsService {
     });
     if (!appointment) {
       throw new NotFoundException(`Appointment with paymentIntentId ${paymentIntentId} not found`);
+    }
+    if (userRole !== Role.ADMIN) {
+      if (appointment.userId !== userId) {
+        throw new ForbiddenException('You do not have permission to view this appointment');
+      }
     }
     return appointment;
   }

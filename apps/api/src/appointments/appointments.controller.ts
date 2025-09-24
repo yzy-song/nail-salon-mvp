@@ -75,32 +75,27 @@ export class AppointmentsController {
     return this.appointmentsService.findAll(paginationDto);
   }
 
-  // 管理员更新预约状态,普通用户支付成功后也要能改状态
+  // 管理员更新预约状态
   @Patch(':id/status')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Update appointment status' })
-  @ApiResponse({ status: 200, description: 'Appointment status updated successfully' })
-  @ApiCommonResponses()
-  updateStatus(
-    @Param('id') id: string,
-    @Body() updateStatusDto: UpdateAppointmentStatusDto,
-    userId?: string,
-    userRole?: string,
-  ) {
-    return this.appointmentsService.updateStatus(id, updateStatusDto, userId, userRole);
-  }
-
-  // 管理员根据支付 intent 查询预约
-  @Get('by-intent/:intentId')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Update appointment status' })
+  @ApiResponse({ status: 200, description: 'Appointment status updated successfully' })
+  @ApiCommonResponses()
+  updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateAppointmentStatusDto) {
+    return this.appointmentsService.updateStatus(id, updateStatusDto);
+  }
+
+  // 管理员根据支付 intent 查询预约,普通用户可以查看自己的预约
+  @Get('by-intent/:intentId')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get appointment by payment intent ID' })
   @ApiResponse({ status: 200, description: 'Return appointment information by payment intent ID' })
   @ApiCommonResponses()
-  findOneByPaymentIntent(@Param('intentId') intentId: string) {
-    return this.appointmentsService.findOneByPaymentIntent(intentId);
+  findOneByPaymentIntent(@Param('intentId') intentId: string, userId?: string, userRole?: string) {
+    return this.appointmentsService.findOneByPaymentIntent(intentId, userId, userRole);
   }
 
   // 管理员重新安排预约
