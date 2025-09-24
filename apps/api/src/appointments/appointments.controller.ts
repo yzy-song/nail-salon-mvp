@@ -75,16 +75,20 @@ export class AppointmentsController {
     return this.appointmentsService.findAll(paginationDto);
   }
 
-  // 管理员更新预约状态
+  // 管理员更新预约状态,普通用户支付成功后也要能改状态
   @Patch(':id/status')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Update appointment status' })
   @ApiResponse({ status: 200, description: 'Appointment status updated successfully' })
   @ApiCommonResponses()
-  updateStatus(@Param('id') id: string, @Body() updateStatusDto: UpdateAppointmentStatusDto) {
-    return this.appointmentsService.updateStatus(id, updateStatusDto);
+  updateStatus(
+    @Param('id') id: string,
+    @Body() updateStatusDto: UpdateAppointmentStatusDto,
+    userId?: string,
+    userRole?: string,
+  ) {
+    return this.appointmentsService.updateStatus(id, updateStatusDto, userId, userRole);
   }
 
   // 管理员根据支付 intent 查询预约

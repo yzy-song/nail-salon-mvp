@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, AlertTriangle, Loader } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
+import { useAuthStore } from '@/store/auth.store';
 
 const StatusContent = () => {
   const searchParams = useSearchParams();
@@ -21,7 +22,9 @@ const StatusContent = () => {
     queryKey: ['payment-status', paymentIntentId],
     queryFn: async () => {
       if (!paymentIntentId) return null;
-      const response = await api.get(`/appointments/by-intent/${paymentIntentId}`);
+      const userId = useAuthStore.getState().user?.id || '';
+      const userRole = useAuthStore.getState().user?.role || '';
+      const response = await api.get(`/appointments/by-intent/${paymentIntentId}`, { params: { userId, userRole } });
       return response.data.data;
     },
     // Keep refetching until we get a final status from the webhook
