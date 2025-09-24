@@ -133,7 +133,7 @@ export const AppointmentCalendar = () => {
           slotMinTime="09:00:00" // 营业开始时间
           slotMaxTime="20:00:00" // 营业结束时间
           allDaySlot={false} // 隐藏 all-day 行
-          slotDuration="00:10:00" // 每个时间段为10分钟
+          slotDuration="00:30:00" // 每个时间段为30分钟
         />
       )}
 
