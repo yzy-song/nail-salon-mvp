@@ -1,0 +1,68 @@
+[
+  {
+    "id": "cmfd38cmi0000b7mkj07w4v6k",
+    "email": "yanziyi290@163.com",
+    "name": "yzy",
+    "password": "$2b$10$drMbfMgYOYd5Z2CMCNbXDuwwZpJpPwFrdfhMNEKip7u7e3a.VRnM.",
+    "role": "ADMIN",
+    "passwordResetToken": null,
+    "passwordResetExpires": null,
+    "createdAt": "2025-09-09T21:53:53.899Z",
+    "updatedAt": "2025-09-09T21:53:53.899Z"
+  },
+  {
+    "id": "cmfdvzyv50000b71wcib4sehz",
+    "email": "test01@example.com",
+    "name": "test01",
+    "password": "$2b$10$Qs3ltsIih.h0v59VNBia1..ZvuConHsOQpmiirV3FgRuS59aUDcDi",
+    "role": "USER",
+    "passwordResetToken": null,
+    "passwordResetExpires": null,
+    "createdAt": "2025-09-10T11:19:11.681Z",
+    "updatedAt": "2025-09-10T11:19:11.681Z"
+  },
+  {
+    "id": "cmfh3e4xg0000b7jozgqax7ks",
+    "email": "yanziyi290@gmail.com",
+    "name": "YzY YzY",
+    "password": "$2b$10$bXo549qYPasQaoWRxKAHqOW6yCyXQ05s4QmAu6BsBWAX0HNdk83wi",
+    "role": "USER",
+    "passwordResetToken": null,
+    "passwordResetExpires": null,
+    "createdAt": "2025-09-12T17:09:28.563Z",
+    "updatedAt": "2025-09-12T17:09:28.563Z"
+  },
+  {
+    "id": "cmfmga0ca0002b7mcry371pvl",
+    "email": "lea-thiebes@web.de",
+    "name": "marie",
+    "password": "7p1lyz54",
+    "role": "USER",
+    "passwordResetToken": null,
+    "passwordResetExpires": null,
+    "createdAt": "2025-09-16T11:09:01.883Z",
+    "updatedAt": "2025-09-16T11:09:01.883Z"
+  },
+  {
+    "id": "cmfmga0es0005b7mch4w0nqgc",
+    "email": "stephaniemartinz305@gmail.com",
+    "name": "Stephanie",
+    "password": "abke2ytl",
+    "role": "USER",
+    "passwordResetToken": null,
+    "passwordResetExpires": null,
+    "createdAt": "2025-09-16T11:09:01.973Z",
+    "updatedAt": "2025-09-16T11:09:01.973Z"
+  },
+  {
+    "id": "cmfmpvvpq0000b7usie6r2dxn",
+    "email": "test08@example.com",
+    "name": "test08",
+    "password": "$2b$10$pRjE29skN8KWUgCHqTYTvOvwbVCg.uVcQz2OdilElh3s1/b5iX1qe",
+    "role": "USER",
+    "passwordResetToken": null,
+    "passwordResetExpires": null,
+    "createdAt": "2025-09-16T15:37:58.863Z",
+    "updatedAt": "2025-09-16T15:37:58.863Z"
+  }
+]
