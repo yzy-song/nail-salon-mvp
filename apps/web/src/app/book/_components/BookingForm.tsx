@@ -15,8 +15,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { format, formatISO, startOfDay } from 'date-fns';
 import { Loader2 } from 'lucide-react';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { GuestInfoDialog } from './GuestInfoDialog';
+import { TimePickerDialog } from './TimePickerDialog';
 
 // 分时段分组函数
 const groupTimesByPeriod = (times: string[]) => {
@@ -54,6 +54,7 @@ export const BookingForm = () => {
   const searchParams = useSearchParams();
   const { isLoggedIn } = useAuthStore();
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
+  const [isTimeDialogOpen, setIsTimeDialogOpen] = useState(false);
 
   const [selectedServiceId, setSelectedServiceId] = useState<string | undefined>(
     searchParams.get('serviceId') || undefined,
@@ -146,7 +147,7 @@ export const BookingForm = () => {
       toast.error('Please complete your selection.');
       return;
     }
-
+    console.log('isloggedin', isLoggedIn);
     if (isLoggedIn) {
       createAppointment();
     } else {
@@ -226,35 +227,26 @@ export const BookingForm = () => {
                   </div>
                   <div className="space-y-4">
                     <Label className="font-semibold">Select a Time</Label>
-                    {timesLoading ? (
-                      <div className="flex items-center pt-4">
-                        <Loader2 className="animate-spin mr-2" />
-                        Loading times...
-                      </div>
-                    ) : isMobile ? (
-                      // 移动端：分时段横向滚动，按钮不会超出屏幕
-                      Object.entries(timeGroups).map(([period, times]) => (
-                        <div key={period} className="mb-2">
-                          <h4 className="font-medium text-sm text-gray-500 mb-2">{period}</h4>
-                          <ScrollArea className="w-full whitespace-nowrap rounded-md">
-                            <div className="flex space-x-2 pb-4">
-                              {times.map((time) => (
-                                <Button
-                                  key={time}
-                                  variant={selectedTime === time ? 'default' : 'outline'}
-                                  onClick={() => setSelectedTime(time)}
-                                  className="min-w-[72px] px-4 py-2 text-base"
-                                >
-                                  {time}
-                                </Button>
-                              ))}
-                            </div>
-                            <ScrollBar orientation="horizontal" />
-                          </ScrollArea>
-                        </div>
-                      ))
+                    {isMobile ? (
+                      <>
+                        <Button
+                          variant={selectedTime ? 'default' : 'outline'}
+                          className="w-full py-3 text-base"
+                          onClick={() => setIsTimeDialogOpen(true)}
+                          disabled={availableTimes.length === 0}
+                        >
+                          {selectedTime || 'Choose a time'}
+                        </Button>
+                        <TimePickerDialog
+                          open={isTimeDialogOpen}
+                          onClose={() => setIsTimeDialogOpen(false)}
+                          times={availableTimes}
+                          selectedTime={selectedTime ?? null}
+                          onSelect={setSelectedTime}
+                        />
+                      </>
                     ) : (
-                      // PC端：全部时间网格展示，不分时段
+                      // PC端：原有网格展示
                       <div className="grid grid-cols-4 gap-4">
                         {availableTimes.map((time) => (
                           <Button
