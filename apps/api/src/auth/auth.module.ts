@@ -13,10 +13,11 @@ import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
-    ConfigModule, // 确保 ConfigModule 被导入
+    ConfigModule,
+    EmailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
-      imports: [ConfigModule, EmailModule],
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const secret = configService.get<string>('JWT_SECRET');

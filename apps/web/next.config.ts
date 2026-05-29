@@ -1,30 +1,45 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  images: {
-    remotePatterns: [
-      // cloudinary图库
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-        pathname: '/**',
-      },
-      // 占位符图片服务
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        pathname: '/**',
-      },
-    ],
-  },
-  allowedDevOrigins: [
-    'localhost',
-    '127.0.0.1',
-    // 还可以加上你常用的本地域名或其他IP
-    '192.168.1.78', // 你的局域网IP
-    '192.168.1.148', // 你的局域网IP
-  ],
+	/* config options here */
+	images: {
+		remotePatterns: [
+			// cloudinary图库
+			{
+				protocol: 'https',
+				hostname: 'res.cloudinary.com',
+				pathname: '/**',
+			},
+			// 占位符图片服务
+			{
+				protocol: 'https',
+				hostname: 'placehold.co',
+				pathname: '/**',
+			},
+		],
+	},
+	allowedDevOrigins: [
+		'localhost',
+		'127.0.0.1',
+		// 还可以加上你常用的本地域名或其他IP
+		'192.168.1.78', // 你的局域网IP
+		'192.168.1.148', // 你的局域网IP
+	],
+	// 修复 Firebase Google 登录: signInWithPopup 需要 popup 与 opener 通信
+	// Cross-Origin-Opener-Policy: unsafe-none 允许跨域弹窗访问 window.opener
+	async headers() {
+		return [
+			{
+				source: '/(.*)',
+				headers: [
+					{
+						key: 'Cross-Origin-Opener-Policy',
+						value: 'unsafe-none',
+					},
+				],
+			},
+		];
+	},
 };
 
 export default nextConfig;
